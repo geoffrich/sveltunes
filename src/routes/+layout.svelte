@@ -8,16 +8,13 @@
 	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
 </script>
 
-<!-- App Shell -->
 <AppShell>
 	<svelte:fragment slot="header">
-		<!-- App Bar -->
 		<AppBar>
 			<svelte:fragment slot="lead">
-				<strong class="text-xl uppercase">Svmusic</strong>
+				<a href="/" class="text-xl uppercase font-bold">Sveltunes</a>
 			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>
-	<!-- Page Route Content -->
 	<slot />
 </AppShell>

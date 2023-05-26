@@ -162,10 +162,175 @@ interface ListResponse {
 	description: string;
 }
 
+/**
+ * Example: {
+  "styles": [
+    "Goa Trance"
+  ],
+  "genres": [
+    "Electronic"
+  ],
+  "videos": [
+    {
+      "duration": 421,
+      "description": "Electric Universe - Alien Encounter Part 2 (Spirit Zone 97)",
+      "embed": true,
+      "uri": "https://www.youtube.com/watch?v=n1LGinzMDi8",
+      "title": "Electric Universe - Alien Encounter Part 2 (Spirit Zone 97)"
+    }
+  ],
+  "title": "Stardiver",
+  "main_release": 66785,
+  "main_release_url": "https://api.discogs.com/releases/66785",
+  "uri": "https://www.discogs.com/Electric-Universe-Stardiver/master/1000",
+  "artists": [
+    {
+      "join": "",
+      "name": "Electric Universe",
+      "anv": "",
+      "tracks": "",
+      "role": "",
+      "resource_url": "https://api.discogs.com/artists/21849",
+      "id": 21849
+    }
+  ],
+  "versions_url": "https://api.discogs.com/masters/1000/versions",
+  "year": 1997,
+  "images": [
+    {
+      "height": 569,
+      "resource_url": "https://api-img.discogs.com/_0K5t_iLs6CzLPKTB4mwHVI3Vy0=/fit-in/600x569/filters:strip_icc():format(jpeg):mode_rgb():quality(96)/discogs-images/R-66785-1213949871.jpeg.jpg",
+      "type": "primary",
+      "uri": "https://api-img.discogs.com/_0K5t_iLs6CzLPKTB4mwHVI3Vy0=/fit-in/600x569/filters:strip_icc():format(jpeg):mode_rgb():quality(96)/discogs-images/R-66785-1213949871.jpeg.jpg",
+      "uri150": "https://api-img.discogs.com/sSWjXKczZseDjX2QohG1Lc77F-w=/fit-in/150x150/filters:strip_icc():format(jpeg):mode_rgb()/discogs-images/R-66785-1213949871.jpeg.jpg",
+      "width": 600
+    },
+    {
+      "height": 296,
+      "resource_url": "https://api-img.discogs.com/1iD31iOWgfgb2DpROI4_MvmceFw=/fit-in/600x296/filters:strip_icc():format(jpeg):mode_rgb():quality(96)/discogs-images/R-66785-1213950065.jpeg.jpg",
+      "type": "secondary",
+      "uri": "https://api-img.discogs.com/1iD31iOWgfgb2DpROI4_MvmceFw=/fit-in/600x296/filters:strip_icc():format(jpeg):mode_rgb():quality(96)/discogs-images/R-66785-1213950065.jpeg.jpg",
+      "uri150": "https://api-img.discogs.com/Cm4Q_1S784pQeRfwa0lN2jsj47Y=/fit-in/150x150/filters:strip_icc():format(jpeg):mode_rgb()/discogs-images/R-66785-1213950065.jpeg.jpg",
+      "width": 600
+    }
+  ],
+  "resource_url": "https://api.discogs.com/masters/1000",
+  "tracklist": [
+    {
+      "duration": "7:00",
+      "position": "1",
+      "type_": "track",
+      "title": "Alien Encounter (Part 2)"
+    },
+    {
+      "duration": "7:13",
+      "position": "2",
+      "type_": "track",
+      "extraartists": [
+        {
+          "join": "",
+          "name": "DJ Sangeet",
+          "anv": "",
+          "tracks": "",
+          "role": "Written-By, Producer",
+          "resource_url": "https://api.discogs.com/artists/25460",
+          "id": 25460
+        }
+      ],
+      "title": "From The Heart"
+    },
+    {
+      "duration": "6:45",
+      "position": "3",
+      "type_": "track",
+      "title": "Radio S.P.A.C.E."
+    }
+  ],
+  "id": 1000,
+  "num_for_sale": 9,
+  "lowest_price": 9.36,
+  "data_quality": "Correct"
+}
+ */
+interface MasterRelease {
+	styles: string[];
+	genres: string[];
+	videos: {
+		duration: number;
+		description: string;
+		embed: boolean;
+		uri: string;
+		title: string;
+	}[];
+	title: string;
+	main_release: number;
+	main_release_url: string;
+	uri: string;
+	artists: {
+		join: string;
+		name: string;
+		anv: string;
+		tracks: string;
+		role: string;
+		resource_url: string;
+		id: number;
+	}[];
+	versions_url: string;
+	year: number;
+	images: {
+		height: number;
+		resource_url: string;
+		type: string;
+		uri: string;
+		uri150: string;
+		width: number;
+	}[];
+	resource_url: string;
+	tracklist: {
+		duration: string;
+		position: string;
+		type_: string;
+		title: string;
+		extraartists?: {
+			join: string;
+			name: string;
+			anv: string;
+			tracks: string;
+			role: string;
+			resource_url: string;
+			id: number;
+		}[];
+	}[];
+	id: number;
+	num_for_sale: number;
+	lowest_price: number;
+	data_quality: string;
+}
+
 interface Album {
 	title: string;
 	url: string;
 	imageUrl: string;
+}
+
+interface AlbumDetail {
+	title: string;
+	mainArtist: {
+		name: string;
+		url: string;
+	};
+	otherArtists: {
+		name: string;
+		url: string;
+	}[];
+	imageUrl: string;
+	year: number;
+	genres: string[];
+	styles: string[];
+	tracks: {
+		title: string;
+		duration: string;
+	}[];
 }
 
 function adaptSearchResult(result: SearchResult): Album {
@@ -184,6 +349,28 @@ function adaptListItem(item: ListResponse['items'][0]): Album {
 	};
 }
 
+function adaptMasterRelease(release: MasterRelease): AlbumDetail {
+	return {
+		title: release.title,
+		mainArtist: {
+			name: release.artists[0].name,
+			url: release.artists[0].resource_url
+		},
+		otherArtists: release.artists.map((artist) => ({
+			name: artist.name,
+			url: artist.resource_url
+		})),
+		imageUrl: release.images[0].uri,
+		year: release.year,
+		genres: release.genres,
+		styles: release.styles,
+		tracks: release.tracklist.map((track) => ({
+			title: track.title,
+			duration: track.duration
+		}))
+	};
+}
+
 export default {
 	getReleasesForYear: async (year: number, maxReleases = 10) => {
 		const response = await callDiscogsWithAuth(`/database/search?year=${year}&type=master`);
@@ -196,6 +383,11 @@ export default {
 	// hardcode this list, since there's not a good api endpoint to use
 	getHighlightedReleases: () => {
 		return HIGHLIGHTED_RELEASES;
+	},
+	getMasterRelease: async (id: string) => {
+		const response = await callDiscogsWithAuth(`/masters/${id}`);
+		const parsed: MasterRelease = await response.json();
+		return adaptMasterRelease(parsed);
 	}
 };
 
@@ -212,52 +404,52 @@ function callDiscogsWithAuth(url: string) {
 const HIGHLIGHTED_RELEASES: Album[] = [
 	{
 		title: "Marvin Gaye - What's Going On",
-		url: 'https://www.discogs.com/master/66631-Marvin-Gaye-Whats-Going-On',
+		url: '/master/66631',
 		imageUrl: "/covers/MarvinGayeWhat'sGoingOnalbumcover.jpg"
 	},
 	{
 		title: 'The Beach Boys - Pet Sounds',
-		url: 'https://www.discogs.com/master/17217-The-Beach-Boys-Pet-Sounds',
+		url: '/master/17217',
 		imageUrl: '/covers/PetSoundsCover.jpg'
 	},
 	{
 		title: 'Joni Mitchell - Blue',
-		url: 'https://www.discogs.com/master/47744-Joni-Mitchell-Blue',
+		url: '/master/47744',
 		imageUrl: '/covers/Bluealbumcover.jpg'
 	},
 	{
 		title: 'Stevie Wonder - Songs In The Key Of Life',
-		url: 'https://www.discogs.com/master/87440-Stevie-Wonder-Songs-In-The-Key-Of-Life',
+		url: '/master/87440',
 		imageUrl: '/covers/Songs_in_the_key_of_life.jpg'
 	},
 	{
 		title: 'The Beatles - Abbey Road',
-		url: 'https://www.discogs.com/master/24047-The-Beatles-Abbey-Road',
+		url: '/master/24047',
 		imageUrl: '/covers/Beatles_-_Abbey_Road.jpg'
 	},
 	{
 		title: 'Fleetwood Mac - Rumours',
-		url: 'https://www.discogs.com/master/38722-Fleetwood-Mac-Rumours',
+		url: '/master/38722',
 		imageUrl: '/covers/FMacRumours.png'
 	},
 	{
 		title: 'Prince - Purple Rain',
-		url: 'https://www.discogs.com/master/16245-Prince-And-The-Revolution-Purple-Rain',
+		url: '/master/16245',
 		imageUrl: '/covers/Princepurplerain.jpg'
 	},
 	{
 		title: 'Bob Dylan - Blood On The Tracks',
-		url: 'https://www.discogs.com/master/3878-Bob-Dylan-Blood-On-The-Tracks',
+		url: '/master/3878',
 		imageUrl: '/covers/Bob_Dylan_-_Blood_on_the_Tracks.jpg'
 	},
 	{
 		title: 'Lauryn Hill - The Miseducation Of Lauryn Hill',
-		url: 'https://www.discogs.com/master/57279-Lauryn-Hill-The-Miseducation-Of-Lauryn-Hill',
+		url: '/master/57279',
 		imageUrl: '/covers/LaurynHillTheMiseducationofLaurynHillalbumcover.jpg'
 	},
 	{
 		title: 'Aretha Franklin - I Never Loved a Man the Way I Love You',
-		url: 'https://www.discogs.com/master/122933-Aretha-Franklin-I-Never-Loved-A-Man-The-Way-I-Love-You',
+		url: '/master/122933',
 		imageUrl: '/covers/Aretha_Franklin_–_I_Never_Loved_a_Man_the_Way_I_Love_You.jpg'
 	}
 ];

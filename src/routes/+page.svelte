@@ -2,9 +2,8 @@
 	export let data;
 </script>
 
-<div class="max-w-prose m-auto">
-	<h1 class="text-3xl font-bold text-center">Svmusic</h1>
-	<p class="text-xl text-center">Explore our collection!</p>
+<div class="max-w-4xl m-auto flex gap-4 flex-col mt-4">
+	<h1 class="text-3xl font-bold text-center">Explore our collection!</h1>
 	<ul class="grid grid-cols-5 gap-4 albums">
 		{#each data.releases as item}
 			<li>
