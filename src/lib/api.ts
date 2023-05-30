@@ -404,52 +404,52 @@ function callDiscogsWithAuth(url: string) {
 const HIGHLIGHTED_RELEASES: Album[] = [
 	{
 		title: "Marvin Gaye - What's Going On",
-		url: '/master/66631',
+		url: '/album/66631',
 		imageUrl: "/covers/MarvinGayeWhat'sGoingOnalbumcover.jpg"
 	},
 	{
 		title: 'The Beach Boys - Pet Sounds',
-		url: '/master/17217',
+		url: '/album/17217',
 		imageUrl: '/covers/PetSoundsCover.jpg'
 	},
 	{
 		title: 'Joni Mitchell - Blue',
-		url: '/master/47744',
+		url: '/album/47744',
 		imageUrl: '/covers/Bluealbumcover.jpg'
 	},
 	{
 		title: 'Stevie Wonder - Songs In The Key Of Life',
-		url: '/master/87440',
+		url: '/album/87440',
 		imageUrl: '/covers/Songs_in_the_key_of_life.jpg'
 	},
 	{
 		title: 'The Beatles - Abbey Road',
-		url: '/master/24047',
+		url: '/album/24047',
 		imageUrl: '/covers/Beatles_-_Abbey_Road.jpg'
 	},
 	{
 		title: 'Fleetwood Mac - Rumours',
-		url: '/master/38722',
+		url: '/album/38722',
 		imageUrl: '/covers/FMacRumours.png'
 	},
 	{
 		title: 'Prince - Purple Rain',
-		url: '/master/16245',
+		url: '/album/16245',
 		imageUrl: '/covers/Princepurplerain.jpg'
 	},
 	{
 		title: 'Bob Dylan - Blood On The Tracks',
-		url: '/master/3878',
+		url: '/album/3878',
 		imageUrl: '/covers/Bob_Dylan_-_Blood_on_the_Tracks.jpg'
 	},
 	{
 		title: 'Lauryn Hill - The Miseducation Of Lauryn Hill',
-		url: '/master/57279',
+		url: '/album/57279',
 		imageUrl: '/covers/LaurynHillTheMiseducationofLaurynHillalbumcover.jpg'
 	},
 	{
 		title: 'Aretha Franklin - I Never Loved a Man the Way I Love You',
-		url: '/master/122933',
+		url: '/album/122933',
 		imageUrl: '/covers/Aretha_Franklin_–_I_Never_Loved_a_Man_the_Way_I_Love_You.jpg'
 	}
 ];
