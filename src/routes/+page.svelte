@@ -1,4 +1,5 @@
 <script>
+	import AlbumGrid from '$lib/AlbumGrid.svelte';
 	export let data;
 </script>
 
@@ -12,17 +13,6 @@
 			name="search"
 		/>
 	</form>
-	<ul class="grid grid-cols-5 gap-4 albums">
-		{#each data.releases as item}
-			<li>
-				<a href={item.url}><img src={item.imageUrl} alt="{item.title} cover" /></a>
-			</li>
-		{/each}
-	</ul>
-</div>
 
-<style>
-	.albums {
-		grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-	}
-</style>
+	<AlbumGrid albums={data.releases} hideText={true} />
+</div>

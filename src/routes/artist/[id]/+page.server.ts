@@ -6,7 +6,8 @@ export function load({ params, url }) {
 	return {
 		detail: api.getArtist(params.id),
 		streamed: {
-			releases: api.getMasterReleasesForArtist(params.id, page)
+			// TODO: figure out if there's a better way
+			releases: api.getMasterReleasesForArtist(params.id, page).catch(() => null)
 		}
 	};
 }

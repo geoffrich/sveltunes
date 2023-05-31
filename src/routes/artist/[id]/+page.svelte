@@ -1,4 +1,6 @@
 <script lang="ts">
+	import AlbumGrid from '$lib/AlbumGrid.svelte';
+
 	export let data;
 
 	$: detail = data.detail;
@@ -33,32 +35,21 @@
 	{#await data.streamed.releases}
 		<p>Loading releases...</p>
 	{:then releases}
-		{@const pagination = releases.pagination}
-		<ul class="grid albums gap-4" data-sveltekit-preload-data="tap">
-			{#each releases.list as release}
-				<li>
-					<a href={release.url}>
-						<img src={release.imageUrl} alt="" class="pb-2" />
-						{release.title} ({release.year})</a
-					>
-				</li>
-			{/each}
-		</ul>
-		<div class="flex gap-4">
-			<!-- TODO: pagination component -->
-			{#if pagination.page > 1}
-				<a href="?page={pagination.page - 1}#releases">Previous</a>
-			{/if}
-			{#if pagination.page < pagination.pages}
-				<a href="?page={pagination.page + 1}#releases">Next</a>
-			{/if}
-			<span>Page {pagination.page} of {pagination.pages}</span>
-		</div>
+		{#if releases}
+			{@const pagination = releases.pagination}
+			<AlbumGrid albums={releases.list} />
+			<div class="flex gap-4">
+				<!-- TODO: pagination component -->
+				{#if pagination.page > 1}
+					<a href="?page={pagination.page - 1}#releases">Previous</a>
+				{/if}
+				{#if pagination.page < pagination.pages}
+					<a href="?page={pagination.page + 1}#releases">Next</a>
+				{/if}
+				<span>Page {pagination.page} of {pagination.pages}</span>
+			</div>
+		{:else}
+			<p>Unable to fetch artist releases</p>
+		{/if}
 	{/await}
 </div>
-
-<style>
-	.albums {
-		grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-	}
-</style>
