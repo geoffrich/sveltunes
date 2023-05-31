@@ -307,10 +307,111 @@ interface MasterRelease {
 	data_quality: string;
 }
 
+/**
+ * Example: {
+  "namevariations": [
+    "Nickleback"
+  ],
+  "profile": "Nickelback is a Canadian rock band from Hanna, Alberta formed in 1995. Nickelback's music is classed as hard rock and alternative metal. Nickelback is one of the most commercially successful Canadian groups, having sold almost 50 million albums worldwide, ranking as the 11th best selling music act of the 2000s, and is the 2nd best selling foreign act in the U.S. behind The Beatles for the 2000's.",
+  "releases_url": "https://api.discogs.com/artists/108713/releases",
+  "resource_url": "https://api.discogs.com/artists/108713",
+  "uri": "https://www.discogs.com/artist/108713-Nickelback",
+  "urls": [
+    "http://www.nickelback.com/",
+    "http://en.wikipedia.org/wiki/Nickelback"
+  ],
+  "data_quality": "Needs Vote",
+  "id": 108713,
+  "images": [
+    {
+      "height": 260,
+      "resource_url": "https://api-img.discogs.com/9xJ5T7IBn23DDMpg1USsDJ7IGm4=/330x260/smart/filters:strip_icc():format(jpeg):mode_rgb():quality(96)/discogs-images/A-108713-1110576087.jpg.jpg",
+      "type": "primary",
+      "uri": "https://api-img.discogs.com/9xJ5T7IBn23DDMpg1USsDJ7IGm4=/330x260/smart/filters:strip_icc():format(jpeg):mode_rgb():quality(96)/discogs-images/A-108713-1110576087.jpg.jpg",
+      "uri150": "https://api-img.discogs.com/--xqi8cBtaBZz3qOjVcvzGvNRmU=/150x150/smart/filters:strip_icc():format(jpeg):mode_rgb()/discogs-images/A-108713-1110576087.jpg.jpg",
+      "width": 330
+    }
+  ],
+  "members": [
+    {
+      "active": true,
+      "id": 270222,
+      "name": "Chad Kroeger",
+      "resource_url": "https://api.discogs.com/artists/270222"
+    }
+  ],
+}
+ */
+interface ArtistResponse {
+	name: string;
+	namevariations: string[];
+	profile: string;
+	releases_url: string;
+	resource_url: string;
+	uri: string;
+	urls: string[];
+	data_quality: string;
+	id: number;
+	images: {
+		height: number;
+		resource_url: string;
+		type: string;
+		uri: string;
+		uri150: string;
+		width: number;
+	}[];
+	members: {
+		active: boolean;
+		id: number;
+		name: string;
+		resource_url: string;
+	}[];
+}
+
+/**
+ * Example: {
+  "pagination": {
+    "per_page": 50,
+    "items": 9,
+    "page": 1,
+    "urls": {},
+    "pages": 1
+  },
+  "releases": [
+    {
+      "artist": "Nickelback",
+      "id": 173765,
+      "main_release": 3128432,
+      "resource_url": "http://api.discogs.com/masters/173765",
+      "role": "Main",
+      "thumb": "https://api-img.discogs.com/lb0zp7--FLaRP0LmJ4W6DhfweNc=/fit-in/90x90/filters:strip_icc():format(jpeg):mode_rgb()/discogs-images/R-5557864-1396493975-7618.jpeg.jpg",
+      "title": "Curb",
+      "type": "master",
+      "year": 1996
+    }
+  ]
+}
+ */
+interface ArtistReleasesResponse {
+	pagination: Pagination;
+	releases: {
+		artist: string;
+		id: number;
+		main_release: number;
+		resource_url: string;
+		role: string;
+		thumb: string;
+		title: string;
+		type: string;
+		year: number;
+	}[];
+}
+
 interface Album {
 	title: string;
 	url: string;
 	imageUrl: string;
+	year: string | number;
 }
 
 interface AlbumDetail {
@@ -333,19 +434,26 @@ interface AlbumDetail {
 	}[];
 }
 
+interface ArtistDetail {
+	name: string;
+	description: string;
+	image: {
+		url: string;
+		width: number;
+		height: number;
+	};
+	members: {
+		name: string;
+		url: string;
+	}[];
+}
+
 function adaptSearchResult(result: SearchResult): Album {
 	return {
 		title: result.title,
 		url: 'https://www.discogs.com' + result.uri,
-		imageUrl: result.cover_image
-	};
-}
-
-function adaptListItem(item: ListResponse['items'][0]): Album {
-	return {
-		title: item.display_title,
-		url: item.uri,
-		imageUrl: item.image_url
+		imageUrl: result.cover_image,
+		year: result.year
 	};
 }
 
@@ -354,7 +462,7 @@ function adaptMasterRelease(release: MasterRelease): AlbumDetail {
 		title: release.title,
 		mainArtist: {
 			name: release.artists[0].name,
-			url: release.artists[0].resource_url
+			url: `/artist/${release.artists[0].id}`
 		},
 		otherArtists: release.artists.map((artist) => ({
 			name: artist.name,
@@ -369,6 +477,33 @@ function adaptMasterRelease(release: MasterRelease): AlbumDetail {
 			duration: track.duration
 		}))
 	};
+}
+
+function adaptArtist(artist: ArtistResponse): ArtistDetail {
+	return {
+		name: artist.name,
+		description: artist.profile,
+		image: {
+			url: artist.images[0].uri,
+			width: artist.images[0].width,
+			height: artist.images[0].height
+		},
+		members: artist.members?.map((member) => ({
+			name: member.name,
+			url: `/artist/${member.id}`
+		}))
+	};
+}
+
+function adaptArtistReleases(response: ArtistReleasesResponse): Album[] {
+	return response.releases
+		.filter((release) => release.type === 'master' && release.role === 'Main')
+		.map((release) => ({
+			title: release.title,
+			url: `/album/${release.id}`,
+			imageUrl: release.thumb,
+			year: release.year
+		}));
 }
 
 export default {
@@ -388,6 +523,22 @@ export default {
 		const response = await callDiscogsWithAuth(`/masters/${id}`);
 		const parsed: MasterRelease = await response.json();
 		return adaptMasterRelease(parsed);
+	},
+	getArtist: async (id: string) => {
+		const response = await callDiscogsWithAuth(`/artists/${id}`);
+		const parsed: ArtistResponse = await response.json();
+		return adaptArtist(parsed);
+	},
+	getMasterReleasesForArtist: async (artistId: string, page: number | string) => {
+		const response = await callDiscogsWithAuth(`/artists/${artistId}/releases?page=${page}`);
+		const parsed: ArtistReleasesResponse = await response.json();
+		return {
+			list: adaptArtistReleases(parsed),
+			pagination: {
+				page: parsed.pagination.page,
+				pages: parsed.pagination.pages
+			}
+		};
 	}
 };
 
@@ -405,51 +556,61 @@ const HIGHLIGHTED_RELEASES: Album[] = [
 	{
 		title: "Marvin Gaye - What's Going On",
 		url: '/album/66631',
-		imageUrl: "/covers/MarvinGayeWhat'sGoingOnalbumcover.jpg"
+		imageUrl: "/covers/MarvinGayeWhat'sGoingOnalbumcover.jpg",
+		year: 1971
 	},
 	{
 		title: 'The Beach Boys - Pet Sounds',
 		url: '/album/17217',
-		imageUrl: '/covers/PetSoundsCover.jpg'
+		imageUrl: '/covers/PetSoundsCover.jpg',
+		year: 1966
 	},
 	{
 		title: 'Joni Mitchell - Blue',
 		url: '/album/47744',
-		imageUrl: '/covers/Bluealbumcover.jpg'
+		imageUrl: '/covers/Bluealbumcover.jpg',
+		year: 1971
 	},
 	{
 		title: 'Stevie Wonder - Songs In The Key Of Life',
 		url: '/album/87440',
-		imageUrl: '/covers/Songs_in_the_key_of_life.jpg'
+		imageUrl: '/covers/Songs_in_the_key_of_life.jpg',
+		year: 1976
 	},
 	{
 		title: 'The Beatles - Abbey Road',
 		url: '/album/24047',
-		imageUrl: '/covers/Beatles_-_Abbey_Road.jpg'
+		imageUrl: '/covers/Beatles_-_Abbey_Road.jpg',
+		year: 1969
 	},
 	{
 		title: 'Fleetwood Mac - Rumours',
 		url: '/album/38722',
-		imageUrl: '/covers/FMacRumours.png'
+		imageUrl: '/covers/FMacRumours.png',
+		year: 1977
 	},
 	{
 		title: 'Prince - Purple Rain',
 		url: '/album/16245',
-		imageUrl: '/covers/Princepurplerain.jpg'
+		imageUrl: '/covers/Princepurplerain.jpg',
+		year: 1984
 	},
 	{
 		title: 'Bob Dylan - Blood On The Tracks',
 		url: '/album/3878',
-		imageUrl: '/covers/Bob_Dylan_-_Blood_on_the_Tracks.jpg'
+		imageUrl: '/covers/Bob_Dylan_-_Blood_on_the_Tracks.jpg',
+		year: 1975
 	},
 	{
 		title: 'Lauryn Hill - The Miseducation Of Lauryn Hill',
 		url: '/album/57279',
-		imageUrl: '/covers/LaurynHillTheMiseducationofLaurynHillalbumcover.jpg'
+		imageUrl: '/covers/LaurynHillTheMiseducationofLaurynHillalbumcover.jpg',
+		year: 1998
 	},
 	{
 		title: 'Aretha Franklin - I Never Loved a Man the Way I Love You',
 		url: '/album/122933',
-		imageUrl: '/covers/Aretha_Franklin_–_I_Never_Loved_a_Man_the_Way_I_Love_You.jpg'
+		imageUrl: '/covers/Aretha_Franklin_–_I_Never_Loved_a_Man_the_Way_I_Love_You.jpg',
+		year: 1967
 	}
 ];

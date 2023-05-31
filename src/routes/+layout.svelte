@@ -8,7 +8,7 @@
 	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
 </script>
 
-<AppShell>
+<AppShell slotPageContent="p-4">
 	<svelte:fragment slot="header">
 		<AppBar>
 			<svelte:fragment slot="lead">
