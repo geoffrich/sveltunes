@@ -2,8 +2,16 @@
 	export let data;
 </script>
 
-<div class="max-w-4xl m-auto flex gap-4 flex-col mt-4">
+<div class="max-w-4xl m-auto space-y-4 mt-4">
 	<h1 class="text-3xl font-bold text-center">Explore our collection!</h1>
+	<form action="/search">
+		<input
+			class="input max-w-lg h-9 p-4 mx-auto block"
+			placeholder="Search"
+			aria-label="Search"
+			name="search"
+		/>
+	</form>
 	<ul class="grid grid-cols-5 gap-4 albums">
 		{#each data.releases as item}
 			<li>

@@ -5,3 +5,5 @@ You will need a Discogs account and a Discogs API key to run this demo. You can 
 ## TODO
 
 - scroll not resetting properly when navigating (skeleton issue?)
+- page titles using PageData
+- not sure if I want to use app shell or not (see scroll issue)

@@ -34,12 +34,12 @@
 		<p>Loading releases...</p>
 	{:then releases}
 		{@const pagination = releases.pagination}
-		<ul class="grid albums gap-4">
+		<ul class="grid albums gap-4" data-sveltekit-preload-data="tap">
 			{#each releases.list as release}
 				<li>
 					<a href={release.url}>
 						<img src={release.imageUrl} alt="" class="pb-2" />
-						{release.title}</a
+						{release.title} ({release.year})</a
 					>
 				</li>
 			{/each}
@@ -49,10 +49,10 @@
 			{#if pagination.page > 1}
 				<a href="?page={pagination.page - 1}#releases">Previous</a>
 			{/if}
-			{#if pagination.page !== pagination.pages - 1}
+			{#if pagination.page < pagination.pages}
 				<a href="?page={pagination.page + 1}#releases">Next</a>
 			{/if}
-			<span>Page {pagination.page}</span>
+			<span>Page {pagination.page} of {pagination.pages}</span>
 		</div>
 	{/await}
 </div>

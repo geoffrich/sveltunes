@@ -1,5 +1,6 @@
 import { join } from 'path';
 import skeleton from '@skeletonlabs/skeleton/tailwind/skeleton.cjs';
+import forms from '@tailwindcss/forms';
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -15,5 +16,5 @@ module.exports = {
 			}
 		}
 	},
-	plugins: [...skeleton()]
+	plugins: [forms, ...skeleton()]
 };

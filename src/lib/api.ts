@@ -4,7 +4,7 @@ const DISCOGS_BASE_URL = 'https://api.discogs.com';
 
 interface SearchResponse {
 	pagination: Pagination;
-	results: SearchResult[];
+	results: DiscogsSearchResult[];
 }
 
 /**
@@ -71,7 +71,7 @@ interface Pagination {
     formats: [ { name: 'Vinyl', qty: '1', descriptions: [Array] } ]
 }
  */
-interface SearchResult {
+interface DiscogsSearchResult {
 	style: string[];
 	thumb: string;
 	title: string;
@@ -448,12 +448,17 @@ interface ArtistDetail {
 	}[];
 }
 
-function adaptSearchResult(result: SearchResult): Album {
+interface SearchResult {
+	title: string;
+	url: string;
+	imageUrl: string;
+}
+
+function adaptSearchResult(result: DiscogsSearchResult): SearchResult {
 	return {
 		title: result.title,
-		url: 'https://www.discogs.com' + result.uri,
-		imageUrl: result.cover_image,
-		year: result.year
+		url: result.type === 'master' ? `/album/${result.id}` : `/artist/${result.id}`,
+		imageUrl: result.thumb || result.cover_image
 	};
 }
 
@@ -461,21 +466,22 @@ function adaptMasterRelease(release: MasterRelease): AlbumDetail {
 	return {
 		title: release.title,
 		mainArtist: {
-			name: release.artists[0].name,
-			url: `/artist/${release.artists[0].id}`
+			name: release.artists?.[0].name,
+			url: `/artist/${release.artists?.[0].id}`
 		},
-		otherArtists: release.artists.map((artist) => ({
+		otherArtists: release.artists?.slice(1).map((artist) => ({
 			name: artist.name,
 			url: artist.resource_url
 		})),
-		imageUrl: release.images[0].uri,
+		imageUrl: release.images?.[0].uri,
 		year: release.year,
 		genres: release.genres,
 		styles: release.styles,
-		tracks: release.tracklist.map((track) => ({
-			title: track.title,
-			duration: track.duration
-		}))
+		tracks:
+			release.tracklist?.map((track) => ({
+				title: track.title,
+				duration: track.duration
+			})) ?? []
 	};
 }
 
@@ -484,9 +490,9 @@ function adaptArtist(artist: ArtistResponse): ArtistDetail {
 		name: artist.name,
 		description: artist.profile,
 		image: {
-			url: artist.images[0].uri,
-			width: artist.images[0].width,
-			height: artist.images[0].height
+			url: artist.images?.[0].uri,
+			width: artist.images?.[0].width,
+			height: artist.images?.[0].height
 		},
 		members: artist.members?.map((member) => ({
 			name: member.name,
@@ -496,25 +502,17 @@ function adaptArtist(artist: ArtistResponse): ArtistDetail {
 }
 
 function adaptArtistReleases(response: ArtistReleasesResponse): Album[] {
-	return response.releases
-		.filter((release) => release.type === 'master' && release.role === 'Main')
-		.map((release) => ({
+	return (
+		response.releases?.map((release) => ({
 			title: release.title,
 			url: `/album/${release.id}`,
 			imageUrl: release.thumb,
 			year: release.year
-		}));
+		})) ?? []
+	);
 }
 
 export default {
-	getReleasesForYear: async (year: number, maxReleases = 10) => {
-		const response = await callDiscogsWithAuth(`/database/search?year=${year}&type=master`);
-		const parsed: SearchResponse = await response.json();
-		return parsed.results
-			.sort((a, b) => b.community.have - a.community.have)
-			.map(adaptSearchResult)
-			.slice(0, maxReleases);
-	},
 	// hardcode this list, since there's not a good api endpoint to use
 	getHighlightedReleases: () => {
 		return HIGHLIGHTED_RELEASES;
@@ -535,10 +533,15 @@ export default {
 		return {
 			list: adaptArtistReleases(parsed),
 			pagination: {
-				page: parsed.pagination.page,
-				pages: parsed.pagination.pages
+				page: parsed.pagination?.page ?? 1,
+				pages: parsed.pagination?.pages ?? 0
 			}
 		};
+	},
+	getSearchResults: async (query: string, type?: string) => {
+		const response = await callDiscogsWithAuth(`/database/search?q=${query}&type=${type}`);
+		const parsed: SearchResponse = await response.json();
+		return parsed.results.map(adaptSearchResult);
 	}
 };
 
