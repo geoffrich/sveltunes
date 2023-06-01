@@ -21,7 +21,6 @@ function adaptSearchResult(result: DiscogsSearchResult): SearchResult {
 }
 
 function adaptMasterRelease(release: MasterRelease): AlbumDetail {
-	console.log(release.tracklist[18]);
 	return {
 		title: release.title,
 		mainArtist: {
