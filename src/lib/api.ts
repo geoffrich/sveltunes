@@ -21,6 +21,7 @@ function adaptSearchResult(result: DiscogsSearchResult): SearchResult {
 }
 
 function adaptMasterRelease(release: MasterRelease): AlbumDetail {
+	console.log(release.tracklist[18]);
 	return {
 		title: release.title,
 		mainArtist: {
@@ -36,10 +37,17 @@ function adaptMasterRelease(release: MasterRelease): AlbumDetail {
 		genres: release.genres,
 		styles: release.styles,
 		tracks:
-			release.tracklist?.map((track) => ({
-				title: track.title,
-				duration: track.duration
-			})) ?? []
+			release.tracklist
+				?.filter((t) => t.type_ !== 'heading')
+				.map((track) => ({
+					title: track.title,
+					duration: track.duration,
+					artists:
+						track.artists?.map((a) => ({
+							name: a.name,
+							url: `/artist/${a.id}`
+						})) ?? []
+				})) ?? []
 	};
 }
 

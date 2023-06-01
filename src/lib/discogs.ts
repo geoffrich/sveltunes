@@ -296,6 +296,10 @@ export interface MasterRelease {
 			resource_url: string;
 			id: number;
 		}[];
+		artists?: {
+			name: string;
+			id: number;
+		}[];
 	}[];
 	id: number;
 	num_for_sale: number;

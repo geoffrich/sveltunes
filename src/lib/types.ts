@@ -22,6 +22,10 @@ export interface AlbumDetail {
 	tracks: {
 		title: string;
 		duration: string;
+		artists: {
+			name: string;
+			url: string;
+		}[];
 	}[];
 }
 

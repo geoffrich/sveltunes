@@ -8,10 +8,12 @@
 	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
 
 	import { page } from '$app/stores';
+
+	$: title = 'Sveltunes' + ($page.data.title ? ` - ${$page.data.title}` : '');
 </script>
 
 <svelte:head>
-	<title>Sveltunes - {$page.data.title}</title>
+	<title>{title}</title>
 </svelte:head>
 
 <AppShell slotPageContent="p-4">

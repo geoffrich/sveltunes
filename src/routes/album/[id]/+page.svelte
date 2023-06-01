@@ -39,9 +39,14 @@
 
 	<h2 class="text-2xl font-bold">Tracklist</h2>
 	<ol class="list-decimal pl-5">
-		{#each detail.tracks as { duration, title }}
+		{#each detail.tracks as { duration, title, artists }}
 			<li>
 				{title}
+				{#if artists.length > 0}
+					-
+					{#each artists as artist, idx}<a href={artist.url}>{artist.name}</a
+						>{#if idx < artists.length - 1}, {/if}{/each}
+				{/if}
 				{#if duration}({duration}){/if}
 			</li>
 		{/each}
