@@ -7,6 +7,7 @@ export async function load({ url }) {
 	return {
 		results,
 		search,
-		type
+		type,
+		title: 'Search results'
 	};
 }

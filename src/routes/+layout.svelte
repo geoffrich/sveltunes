@@ -6,7 +6,13 @@
 	// Most of your app wide CSS should be put in this file
 	import '../app.postcss';
 	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
+
+	import { page } from '$app/stores';
 </script>
+
+<svelte:head>
+	<title>Sveltunes - {$page.data.title}</title>
+</svelte:head>
 
 <AppShell slotPageContent="p-4">
 	<svelte:fragment slot="header">

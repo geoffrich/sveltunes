@@ -1,7 +1,9 @@
 import api from '$lib/api';
 
-export function load({ params }) {
+export async function load({ params }) {
+	const detail = await api.getMasterRelease(params.id);
 	return {
-		detail: api.getMasterRelease(params.id)
+		detail,
+		title: detail.title
 	};
 }

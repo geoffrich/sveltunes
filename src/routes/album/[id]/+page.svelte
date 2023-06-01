@@ -17,6 +17,7 @@
 			<h1 class="text-4xl">
 				<span class="italic font-bold">{detail.title}</span>, by
 				<a href={detail.mainArtist.url}>{detail.mainArtist.name}</a>
+				<!-- TODO: a11y -->
 				{#if detail.otherArtists?.length > 0}
 					<span class="text-lg" title={detail.otherArtists.map((a) => a.name).join(', ')}
 						>+ <span class=" underline decoration-dashed">{detail.otherArtists.length} others</span

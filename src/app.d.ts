@@ -3,7 +3,10 @@
 // and what to do when importing types
 declare namespace App {
 	// interface Locals {}
-	// interface PageData {}
+	// TODO: typesafety not working, I think related to Zero-effort
+	interface PageData {
+		title: string;
+	}
 	// interface Error {}
 	// interface Platform {}
 }
