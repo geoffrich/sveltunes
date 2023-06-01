@@ -6,6 +6,7 @@
 	// Most of your app wide CSS should be put in this file
 	import '../app.postcss';
 	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
+	import { Toast } from '@skeletonlabs/skeleton';
 
 	import { page } from '$app/stores';
 
@@ -25,4 +26,5 @@
 		</AppBar>
 	</svelte:fragment>
 	<slot />
+	<Toast />
 </AppShell>

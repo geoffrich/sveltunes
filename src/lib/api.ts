@@ -11,6 +11,9 @@ import type {
 
 const DISCOGS_BASE_URL = 'https://api.discogs.com';
 
+// temporary in-memory db
+const db = {};
+
 function adaptSearchResult(result: DiscogsSearchResult): SearchResult {
 	return {
 		title: result.title,
@@ -108,6 +111,23 @@ export default {
 		const response = await callDiscogsWithAuth(`/database/search?q=${query}&type=${type}`);
 		const parsed: SearchResponse = await response.json();
 		return parsed.results.map(adaptSearchResult);
+	},
+	favoriteAlbum: async (id: string, userId: number) => {
+		db[userId] = db[userId] ?? {};
+		db[userId].favorites = db[userId].favorites ?? [];
+		if (db[userId].favorites.includes(id)) {
+			return;
+		}
+		db[userId].favorites.push(id);
+	},
+	unfavoriteAlbum: async (id: string, userId: number) => {
+		db[userId] = db[userId] ?? {};
+		db[userId].favorites = db[userId].favorites ?? [];
+		db[userId].favorites = db[userId].favorites.filter((favId) => favId !== id);
+	},
+	isAlbumFavorited: async (id: string, userId: number) => {
+		console.log(db[userId]);
+		return db[userId]?.favorites?.includes(id) ?? false;
 	}
 };
 
