@@ -11,8 +11,18 @@ import type {
 
 const DISCOGS_BASE_URL = 'https://api.discogs.com';
 
+interface DB {
+	[key: string]: {
+		favorites: string[];
+	};
+}
+
 // temporary in-memory db
-const db = {};
+const db: DB = {
+	123: {
+		favorites: ['66631', '17217', '38722']
+	}
+};
 
 function adaptSearchResult(result: DiscogsSearchResult): SearchResult {
 	return {
@@ -25,6 +35,7 @@ function adaptSearchResult(result: DiscogsSearchResult): SearchResult {
 
 function adaptMasterRelease(release: MasterRelease): AlbumDetail {
 	return {
+		id: release.id,
 		title: release.title,
 		mainArtist: {
 			name: release.artists?.[0].name,
@@ -35,6 +46,7 @@ function adaptMasterRelease(release: MasterRelease): AlbumDetail {
 			url: artist.resource_url
 		})),
 		imageUrl: release.images?.[0].uri,
+		thumbnailUrl: release.images?.[0].uri150,
 		year: release.year,
 		genres: release.genres,
 		styles: release.styles,
@@ -81,16 +93,18 @@ function adaptArtistReleases(response: ArtistReleasesResponse): Album[] {
 	);
 }
 
+const getMasterRelease = async (id: string) => {
+	const response = await callDiscogsWithAuth(`/masters/${id}`);
+	const parsed: MasterRelease = await response.json();
+	return adaptMasterRelease(parsed);
+};
+
 export default {
 	// hardcode this list, since there's not a good api endpoint to use
 	getHighlightedReleases: () => {
 		return HIGHLIGHTED_RELEASES;
 	},
-	getMasterRelease: async (id: string) => {
-		const response = await callDiscogsWithAuth(`/masters/${id}`);
-		const parsed: MasterRelease = await response.json();
-		return adaptMasterRelease(parsed);
-	},
+	getMasterRelease,
 	getArtist: async (id: string) => {
 		const response = await callDiscogsWithAuth(`/artists/${id}`);
 		const parsed: ArtistResponse = await response.json();
@@ -126,8 +140,15 @@ export default {
 		db[userId].favorites = db[userId].favorites.filter((favId) => favId !== id);
 	},
 	isAlbumFavorited: async (id: string, userId: number) => {
-		console.log(db[userId]);
 		return db[userId]?.favorites?.includes(id) ?? false;
+	},
+	getFavoriteAlbumIds: async (userId: number) => {
+		return db[userId]?.favorites ?? [];
+	},
+	getFavoriteAlbumDetails: async (userId: number) => {
+		const ids = db[userId]?.favorites ?? [];
+		const details = await Promise.all(ids.map((id) => getMasterRelease(id)));
+		return details;
 	}
 };
 

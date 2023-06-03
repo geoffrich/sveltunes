@@ -10,6 +10,7 @@
 
 	import { page } from '$app/stores';
 
+	export let data;
 	$: title = 'Sveltunes' + ($page.data.title ? ` - ${$page.data.title}` : '');
 </script>
 
@@ -22,6 +23,18 @@
 		<AppBar>
 			<svelte:fragment slot="lead">
 				<a href="/" class="text-xl uppercase font-bold">Sveltunes</a>
+			</svelte:fragment>
+			<svelte:fragment slot="trail">
+				{#if data.isLoggedIn}
+					<a
+						href="/favorites"
+						class="text-lg font-bold border-2 rounded-3xl px-4 py-1 no-underline relative"
+						>Favorites <span
+							class="text-sm text-surface-900 bg-surface-50 rounded-full px-2 py-1 tabular-nums"
+							>{data.favoriteAlbumIds.length}</span
+						></a
+					>
+				{/if}
 			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>

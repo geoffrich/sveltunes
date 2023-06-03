@@ -6,8 +6,7 @@ export async function load({ params, locals }) {
 	const detail = await api.getMasterRelease(params.id);
 	return {
 		detail,
-		title: detail.title,
-		isFavorite: api.isAlbumFavorited(params.id, locals.userId)
+		title: detail.title
 	};
 }
 
@@ -20,7 +19,7 @@ export const actions = {
 		const data = await event.request.formData();
 		const id = data.get('id') as string;
 		await delay(500);
-		if (Math.random() < 0.5) return fail(500);
+		if (Math.random() < 0.3) return fail(500);
 		await api.favoriteAlbum(id, event.locals.userId);
 		throw redirect(303, `/album/${id}`);
 	},

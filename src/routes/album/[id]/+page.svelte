@@ -15,7 +15,9 @@
 
 	let submission: FormData | undefined;
 
-	$: isFavorite = submission ? !data.isFavorite : data.isFavorite;
+	$: favoriteAlbumsHasId = data.favoriteAlbumIds.includes($page.params.id);
+	// when submitting, assume the submission has succeeded and the value is flipped
+	$: isFavorite = submission ? !favoriteAlbumsHasId : favoriteAlbumsHasId;
 
 	afterNavigate(() => {
 		submission = undefined;

@@ -6,6 +6,7 @@ export interface Album {
 }
 
 export interface AlbumDetail {
+	id: number;
 	title: string;
 	mainArtist: {
 		name: string;
@@ -16,6 +17,7 @@ export interface AlbumDetail {
 		url: string;
 	}[];
 	imageUrl: string;
+	thumbnailUrl: string;
 	year: number;
 	genres: string[];
 	styles: string[];
