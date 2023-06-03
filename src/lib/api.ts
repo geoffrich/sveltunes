@@ -39,7 +39,8 @@ function adaptMasterRelease(release: MasterRelease): AlbumDetail {
 		title: release.title,
 		mainArtist: {
 			name: release.artists?.[0].name,
-			url: `/artist/${release.artists?.[0].id}`
+			url: `/artist/${release.artists?.[0].id}`,
+			id: release.artists?.[0].id
 		},
 		otherArtists: release.artists?.slice(1).map((artist) => ({
 			name: artist.name,

@@ -11,6 +11,7 @@ export interface AlbumDetail {
 	mainArtist: {
 		name: string;
 		url: string;
+		id: number;
 	};
 	otherArtists: {
 		name: string;
