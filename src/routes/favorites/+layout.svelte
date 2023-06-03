@@ -1,12 +1,26 @@
-<script>
+<script lang="ts">
 	import { page } from '$app/stores';
 	export let data;
+
+	let groupBy = $page.url.searchParams.get('groupBy') ?? 'album';
+	let form: HTMLFormElement;
 
 	$: selectedId = $page.params.id;
 	$: favorites = data.favorites.sort((a, b) => a.title.localeCompare(b.title));
 </script>
 
 <h1 class="text-4xl font-bold mb-4">Favorites</h1>
+<form class="space-y-2 mb-4" bind:this={form} on:change={() => form.requestSubmit()}>
+	<!-- TODO: no JS version? -->
+	<label class="flex items-center space-x-2">
+		<input class="radio" type="radio" name="groupBy" value="album" bind:group={groupBy} />
+		<span>Album</span>
+	</label>
+	<label class="flex items-center space-x-2">
+		<input class="radio" type="radio" name="groupBy" value="artist" bind:group={groupBy} />
+		<span>Artist</span>
+	</label>
+</form>
 
 <div class="grid favorites gap-6">
 	<ul class="rounded-md border-4 border-primary-900">
@@ -20,7 +34,7 @@
 				<img src={favorite.thumbnailUrl} alt="" class="hidden sm:block" />
 				<a
 					href="/favorites/{favorite.id}"
-					class="col-span-full sm:col-span-2 text-base sm:text-xl leading-6 no-underline after:absolute after:inset-0"
+					class="col-span-full sm:col-span-2 text-base sm:text-xl leading-snug no-underline after:absolute after:inset-0"
 					><span class:font-bold={isSelected}>{favorite.title}</span> <br /><span class="text-sm"
 						>{favorite.mainArtist.name}</span
 					></a

@@ -5,7 +5,7 @@
 </script>
 
 <div class="space-y-4">
-	<h2 class="text-4xl">
+	<h2 class="text-4xl leading-snug">
 		<a href="/album/{detail.id}" class="italic font-bold">{detail.title}</a>, by
 		<a href={detail.mainArtist.url}>{detail.mainArtist.name}</a>
 	</h2>
