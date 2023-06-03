@@ -2,8 +2,6 @@
 	import { page } from '$app/stores';
 	import { enhance } from '$app/forms';
 	import { toastStore } from '@skeletonlabs/skeleton';
-	import { onMount } from 'svelte';
-	import { browser } from '$app/environment';
 	import { afterNavigate } from '$app/navigation';
 	export let data;
 
@@ -18,6 +16,10 @@
 	let submission: FormData | undefined;
 
 	$: isFavorite = submission ? !data.isFavorite : data.isFavorite;
+
+	afterNavigate(() => {
+		submission = undefined;
+	});
 </script>
 
 <div class="mx-auto max-w-4xl space-y-4">
@@ -57,12 +59,9 @@
 								message: 'Unable to favorite album',
 								background: 'variant-filled-error'
 							});
+							submission = undefined;
 						}
 						await update();
-						// TODO: figure out best way to do this
-						// this causes a flash back to the old version before redirect completes
-						// tried resetting in afterNavigate, but that doesn't fire on failure
-						submission = undefined;
 					};
 				}}
 			>
