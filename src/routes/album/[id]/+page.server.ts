@@ -19,7 +19,7 @@ export const actions = {
 		const data = await event.request.formData();
 		const id = data.get('id') as string;
 		await delay(500);
-		if (Math.random() < 0.3) return fail(500);
+		// if (Math.random() < 0.3) return fail(500);
 		await api.favoriteAlbum(id, event.locals.userId);
 		throw redirect(303, `/album/${id}`);
 	},

@@ -11,3 +11,4 @@ You will need a Discogs account and a Discogs API key to run this demo. You can 
 - improve pagination to only load additional data - +server.js endpoint
 - actual "login" route that sets a cookie
 - replace state after favoriting album to avoid cluttering history
+- share more code between album and favorite page?
