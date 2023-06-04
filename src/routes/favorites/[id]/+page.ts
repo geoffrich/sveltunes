@@ -11,6 +11,7 @@ export async function load({ parent, params }) {
 	return {
 		album,
 		title: 'Favorites - ' + album.title,
-		id: params.id
+		id: params.id,
+		groupBy: 'album'
 	};
 }

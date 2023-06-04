@@ -4,7 +4,7 @@
 	import { TabGroup, Tab } from '@skeletonlabs/skeleton';
 	export let data;
 
-	let groupBy = $page.url.searchParams.get('groupBy') ?? 'album';
+	let groupBy = $page.url.searchParams.get('groupBy') ?? $page.data.groupBy ?? 'album';
 
 	$: favorites = data.favorites.sort((a, b) => a.title.localeCompare(b.title));
 

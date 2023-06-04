@@ -98,6 +98,7 @@ function adaptArtistReleases(response: ArtistReleasesResponse): Album[] {
 }
 
 const getMasterRelease = async (id: string) => {
+	console.log('Fetching album id', id);
 	const response = await callDiscogsWithAuth(`/masters/${id}`);
 	const parsed: MasterRelease = await response.json();
 	return adaptMasterRelease(parsed);

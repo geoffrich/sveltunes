@@ -8,6 +8,7 @@ export async function load({ parent, params }) {
 	return {
 		albums,
 		title: 'Favorites - ' + albums[0].mainArtist.name,
-		id: params.id
+		id: params.id,
+		groupBy: 'artist'
 	};
 }
