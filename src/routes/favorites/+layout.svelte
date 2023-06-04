@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import type { AlbumDetail } from '$lib/types.js';
+	import { TabGroup, Tab } from '@skeletonlabs/skeleton';
 	export let data;
 
 	let groupBy = $page.url.searchParams.get('groupBy') ?? 'album';
-	let form: HTMLFormElement;
 
 	$: favorites = data.favorites.sort((a, b) => a.title.localeCompare(b.title));
 
@@ -38,37 +38,33 @@
 		You haven't selected any favorites. Maybe <a href="/search">search</a> for some?
 	</p>
 {:else}
-	<form class="space-y-2 mb-4" bind:this={form} on:change={() => form.requestSubmit()}>
-		<!-- TODO: no JS version? -->
-		<label class="flex items-center space-x-2">
-			<input class="radio" type="radio" name="groupBy" value="album" bind:group={groupBy} />
-			<span>Album</span>
-		</label>
-		<label class="flex items-center space-x-2">
-			<input class="radio" type="radio" name="groupBy" value="artist" bind:group={groupBy} />
-			<span>Artist</span>
-		</label>
-	</form>
 	<div class="grid favorites gap-6">
-		<ul class="rounded-md border-4 border-primary-900 self-start">
-			{#each items as favorite}
-				{@const isSelected = $page.url.pathname === favorite.path}
-				<li
-					class="grid grid-cols-3 gap-2 items-center p-2 relative {isSelected
-						? 'bg-surface-900'
-						: 'bg-primary-900 hover:bg-surface-900'}"
-				>
-					<img src={favorite.image} alt="" class="hidden sm:block" />
-					<a
-						href={favorite.path}
-						class="col-span-full sm:col-span-2 text-base sm:text-xl leading-snug no-underline after:absolute after:inset-0"
-						><span class:font-bold={isSelected}>{favorite.title}</span> <br />
-						{#if favorite.subtitle}
-							<span class="text-sm">{favorite.subtitle}</span>{/if}</a
+		<div class="self-start">
+			<!-- TODO: no-js? -->
+			<TabGroup justify="justify-center" border="">
+				<Tab bind:group={groupBy} name="groupBy" value="album">Album</Tab>
+				<Tab bind:group={groupBy} name="groupBy" value="artist">Artist</Tab>
+			</TabGroup>
+			<ul class="rounded-md border-4 border-primary-900">
+				{#each items as favorite}
+					{@const isSelected = $page.url.pathname === favorite.path}
+					<li
+						class="grid grid-cols-3 gap-2 items-center p-2 relative {isSelected
+							? 'bg-surface-900'
+							: 'bg-primary-900 hover:bg-surface-900'}"
 					>
-				</li>
-			{/each}
-		</ul>
+						<img src={favorite.image} alt="" class="hidden sm:block" />
+						<a
+							href={favorite.path}
+							class="col-span-full sm:col-span-2 text-base sm:text-xl leading-snug no-underline after:absolute after:inset-0"
+							><span class:font-bold={isSelected}>{favorite.title}</span> <br />
+							{#if favorite.subtitle}
+								<span class="text-sm">{favorite.subtitle}</span>{/if}</a
+						>
+					</li>
+				{/each}
+			</ul>
+		</div>
 
 		<div>
 			<slot />
