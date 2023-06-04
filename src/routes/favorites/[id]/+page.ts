@@ -9,6 +9,7 @@ export async function load({ parent, params }) {
 		});
 
 	return {
-		album
+		album,
+		title: 'Favorites - ' + album.title
 	};
 }

@@ -9,6 +9,7 @@ export async function load({ parent, params }) {
 		});
 
 	return {
-		albums
+		albums,
+		title: 'Favorites - ' + albums[0].mainArtist.name
 	};
 }

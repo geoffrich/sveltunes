@@ -6,6 +6,6 @@ export const actions = {
 		const data = await event.request.formData();
 		const id = data.get('id') as string;
 		await api.unfavoriteAlbum(id, event.locals.userId);
-		throw redirect(303, `/favorites`);
+		throw redirect(303, '/favorites');
 	}
 };
