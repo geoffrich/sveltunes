@@ -8,6 +8,7 @@ import type {
 	MasterRelease,
 	SearchResponse
 } from './discogs';
+import { delay } from './util';
 
 const DISCOGS_BASE_URL = 'https://api.discogs.com';
 
@@ -134,11 +135,13 @@ export default {
 			return;
 		}
 		db[userId].favorites.push(id);
+		await delay(500);
 	},
 	unfavoriteAlbum: async (id: string, userId: number) => {
 		db[userId] = db[userId] ?? {};
 		db[userId].favorites = db[userId].favorites ?? [];
 		db[userId].favorites = db[userId].favorites.filter((favId) => favId !== id);
+		await delay(500);
 	},
 	isAlbumFavorited: async (id: string, userId: number) => {
 		return db[userId]?.favorites?.includes(id) ?? false;

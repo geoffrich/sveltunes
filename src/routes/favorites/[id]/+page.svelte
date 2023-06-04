@@ -1,4 +1,8 @@
 <script>
+	import { page } from '$app/stores';
+	import { enhance } from '$app/forms';
+	import Tracklist from '$lib/Tracklist.svelte';
+	import Trash from '$lib/icons/Trash.svelte';
 	export let data;
 
 	$: detail = data.album;
@@ -10,17 +14,13 @@
 		<a href={detail.mainArtist.url}>{detail.mainArtist.name}</a>
 	</h2>
 
-	<ol class="list-decimal pl-5">
-		{#each detail.tracks as { duration, title, artists }}
-			<li>
-				{title}
-				{#if artists.length > 0}
-					-
-					{#each artists as artist, idx}<a href={artist.url}>{artist.name}</a
-						>{#if idx < artists.length - 1}, {/if}{/each}
-				{/if}
-				{#if duration}({duration}){/if}
-			</li>
-		{/each}
-	</ol>
+	<form action="?/unfavorite" method="POST" use:enhance>
+		<input type="hidden" name="id" value={$page.params.id} />
+		<button class="btn border-2 variant-filled-secondary">
+			<Trash />
+			<span>Un-favorite</span>
+		</button>
+	</form>
+
+	<Tracklist tracks={detail.tracks} />
 </div>

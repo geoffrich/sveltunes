@@ -22,13 +22,15 @@ export interface AlbumDetail {
 	year: number;
 	genres: string[];
 	styles: string[];
-	tracks: {
-		title: string;
-		duration: string;
-		artists: {
-			name: string;
-			url: string;
-		}[];
+	tracks: Track[];
+}
+
+export interface Track {
+	title: string;
+	duration: string;
+	artists: {
+		name: string;
+		url: string;
 	}[];
 }
 

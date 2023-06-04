@@ -3,6 +3,8 @@
 	import { enhance } from '$app/forms';
 	import { toastStore } from '@skeletonlabs/skeleton';
 	import { afterNavigate } from '$app/navigation';
+	import Tracklist from '$lib/Tracklist.svelte';
+	import Heart from '$lib/icons/Heart.svelte';
 	export let data;
 
 	$: detail = data.detail;
@@ -72,21 +74,8 @@
 					class="btn border-2"
 					class:variant-filled={!isFavorite}
 					class:variant-filled-secondary={isFavorite}
-					><svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke-width="1.5"
-						stroke="currentColor"
-						class="w-6 h-6"
-						class:fill-red-600={isFavorite}
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
-						/>
-					</svg>
+				>
+					<Heart class={isFavorite ? 'fill-red-600' : ''} />
 					<span>Love</span>
 				</button>
 			</form>
@@ -94,17 +83,5 @@
 	</div>
 
 	<h2 class="text-2xl font-bold">Tracklist</h2>
-	<ol class="list-decimal pl-5">
-		{#each detail.tracks as { duration, title, artists }}
-			<li>
-				{title}
-				{#if artists.length > 0}
-					-
-					{#each artists as artist, idx}<a href={artist.url}>{artist.name}</a
-						>{#if idx < artists.length - 1}, {/if}{/each}
-				{/if}
-				{#if duration}({duration}){/if}
-			</li>
-		{/each}
-	</ol>
+	<Tracklist tracks={detail.tracks} />
 </div>
