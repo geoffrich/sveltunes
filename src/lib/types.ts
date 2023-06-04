@@ -3,6 +3,7 @@ export interface Album {
 	url: string;
 	imageUrl: string;
 	year?: string | number;
+	id: number;
 }
 
 export interface AlbumDetail {
@@ -23,6 +24,7 @@ export interface AlbumDetail {
 	genres: string[];
 	styles: string[];
 	tracks: Track[];
+	url: string;
 }
 
 export interface Track {

@@ -3,6 +3,7 @@
 	import { enhance } from '$app/forms';
 	import Tracklist from '$lib/Tracklist.svelte';
 	import Trash from '$lib/icons/Trash.svelte';
+	import { promptUndo } from '../undo/action';
 	export let data;
 
 	$: detail = data.album;
@@ -14,7 +15,18 @@
 		<a href={detail.mainArtist.url}>{detail.mainArtist.name}</a>
 	</h2>
 
-	<form action="?/unfavorite" method="POST" use:enhance>
+	<form
+		action="?/unfavorite"
+		method="POST"
+		use:enhance={() => {
+			return ({ result, update }) => {
+				if (result.type !== 'error') {
+					promptUndo(data.album);
+				}
+				update();
+			};
+		}}
+	>
 		<input type="hidden" name="id" value={$page.params.id} />
 		<button class="btn border-2 variant-filled-secondary">
 			<Trash />

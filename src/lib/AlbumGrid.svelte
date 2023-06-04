@@ -7,7 +7,13 @@
 <ul class="grid albums gap-4" data-sveltekit-preload-data="tap">
 	{#each albums as release}
 		<li class="relative">
-			<img src={release.imageUrl} alt="" class="pb-2" />
+			<div class="relative pb-2">
+				<img src={release.imageUrl} alt="" />
+				<div class="absolute bottom-3 right-1 z-10">
+					<slot name="action" {release} />
+				</div>
+			</div>
+
 			<svelte:element
 				this={release.url ? 'a' : 'span'}
 				class="after:absolute after:inset-0"
