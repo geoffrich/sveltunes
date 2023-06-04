@@ -16,12 +16,16 @@ export const actions = {
 		const id = data.get('id') as string;
 		// if (Math.random() < 0.3) return fail(500);
 		await api.favoriteAlbum(id, event.locals.userId);
-		throw redirect(303, `/album/${id}`);
+		return {
+			success: true
+		};
 	},
 	unfavorite: async (event) => {
 		const data = await event.request.formData();
 		const id = data.get('id') as string;
 		await api.unfavoriteAlbum(id, event.locals.userId);
-		throw redirect(303, `/album/${id}`);
+		return {
+			success: true
+		};
 	}
 };

@@ -2,10 +2,10 @@
 	import { page } from '$app/stores';
 	import { enhance } from '$app/forms';
 	import { toastStore } from '@skeletonlabs/skeleton';
-	import { afterNavigate } from '$app/navigation';
 	import Tracklist from '$lib/Tracklist.svelte';
 	import Heart from '$lib/icons/Heart.svelte';
 	export let data;
+	export let form;
 
 	$: detail = data.detail;
 
@@ -21,9 +21,11 @@
 	// when submitting, assume the submission has succeeded and the value is flipped
 	$: isFavorite = submission ? !favoriteAlbumsHasId : favoriteAlbumsHasId;
 
-	afterNavigate(() => {
+	// once form is set, remove the submission (used for optimistic UI)
+	// note: this requires the action to return an actual object
+	$: if (form) {
 		submission = undefined;
-	});
+	}
 </script>
 
 <div class="mx-auto max-w-4xl space-y-4">
@@ -63,7 +65,6 @@
 								message: 'Unable to favorite album',
 								background: 'variant-filled-error'
 							});
-							submission = undefined;
 						}
 						await update();
 					};
