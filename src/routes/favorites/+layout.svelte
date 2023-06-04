@@ -21,7 +21,7 @@
 					title: f.title,
 					subtitle: f.mainArtist.name,
 					image: f.thumbnailUrl,
-					path: `/favorites/${f.id}`
+					path: `/favorites/album/${f.id}`
 			  }))
 			: Object.entries(albumsGroupedByArtist).map(([artist, albums]) => ({
 					title: artist,

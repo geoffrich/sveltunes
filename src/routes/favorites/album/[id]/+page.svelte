@@ -3,7 +3,7 @@
 	import { enhance } from '$app/forms';
 	import Tracklist from '$lib/Tracklist.svelte';
 	import Trash from '$lib/icons/Trash.svelte';
-	import { promptUndo } from '../undo/action';
+	import { promptUndo } from '../../undo/action';
 	export let data;
 
 	$: detail = data.album;
