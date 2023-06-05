@@ -39,12 +39,11 @@
 {:else}
 	<div class="grid favorites gap-6">
 		<div class="self-start">
-			<!-- TODO: no-js? -->
-			<div class="flex overflow-x-auto hide-scrollbar justify-center">
+			<div class="flex justify-center">
 				{#each [['Album', '?groupBy=album'], ['Artist', '?groupBy=artist']] as [label, href]}
 					<a
 						{href}
-						class="text-center cursor-pointer transition-colors duration-100 flex-none px-4 py-2 rounded-tl-container-token rounded-tr-container-token hover:variant-soft no-underline"
+						class="text-center cursor-pointer transition-colors duration-100 px-4 py-2 rounded-tl-container-token rounded-tr-container-token no-underline hover:variant-soft"
 						class:border-b-2={groupBy === label.toLowerCase()}
 						class:border-surface-900-50-token={groupBy === label.toLowerCase()}>{label}</a
 					>
