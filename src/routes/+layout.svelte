@@ -9,6 +9,7 @@
 	import { Toast } from '@skeletonlabs/skeleton';
 
 	import { page } from '$app/stores';
+	import { enhance } from '$app/forms';
 
 	export let data;
 	$: title = 'Sveltunes' + ($page.data.title ? ` - ${$page.data.title}` : '');
@@ -34,6 +35,11 @@
 							>{data.favoriteAlbumIds.length}</span
 						></a
 					>
+					<form action="/logout" method="POST" use:enhance>
+						<button class="btn variant-filled">Logout</button>
+					</form>
+				{:else}
+					<a href="/login">Login</a>
 				{/if}
 			</svelte:fragment>
 		</AppBar>
