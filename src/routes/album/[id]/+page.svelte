@@ -52,34 +52,36 @@
 					</div>
 				{/each}
 			</dl>
-			<form
-				action={isFavorite ? '?/unfavorite' : '?/favorite'}
-				method="POST"
-				use:enhance={(event) => {
-					// TODO: better way?
-					submission = event.formData;
-					return async ({ update, result }) => {
-						if (result.type === 'failure') {
-							// TODO: non-enhanced?
-							toastStore.trigger({
-								message: 'Unable to favorite album',
-								background: 'variant-filled-error'
-							});
-						}
-						await update();
-					};
-				}}
-			>
-				<input type="hidden" name="id" value={$page.params.id} />
-				<button
-					class="btn border-2"
-					class:variant-filled={!isFavorite}
-					class:variant-filled-secondary={isFavorite}
+			{#if data.isLoggedIn}
+				<form
+					action={isFavorite ? '?/unfavorite' : '?/favorite'}
+					method="POST"
+					use:enhance={(event) => {
+						// TODO: better way?
+						submission = event.formData;
+						return async ({ update, result }) => {
+							if (result.type === 'failure') {
+								// TODO: non-enhanced?
+								toastStore.trigger({
+									message: 'Unable to favorite album',
+									background: 'variant-filled-error'
+								});
+							}
+							await update();
+						};
+					}}
 				>
-					<Heart class={isFavorite ? 'fill-red-600' : ''} />
-					<span>Love</span>
-				</button>
-			</form>
+					<input type="hidden" name="id" value={$page.params.id} />
+					<button
+						class="btn border-2"
+						class:variant-filled={!isFavorite}
+						class:variant-filled-secondary={isFavorite}
+					>
+						<Heart class={isFavorite ? 'fill-red-600' : ''} />
+						<span>Favorite</span>
+					</button>
+				</form>
+			{/if}
 		</div>
 	</div>
 
