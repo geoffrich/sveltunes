@@ -41,7 +41,7 @@
 {:else}
 	<div class="grid favorites gap-6">
 		<div class="self-start">
-			<div class="flex justify-center">
+			<div class="flex justify-center" data-sveltekit-replacestate>
 				{#each [['Album', '?groupBy=album'], ['Artist', '?groupBy=artist']] as [label, href]}
 					<a
 						{href}
