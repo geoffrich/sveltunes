@@ -39,7 +39,6 @@
 			{@const pagination = releases.pagination}
 			<AlbumGrid albums={releases.list} />
 			<div class="flex gap-4">
-				<!-- TODO: pagination component -->
 				{#if pagination.page > 1}
 					<a href="?page={pagination.page - 1}#releases">Previous</a>
 				{/if}

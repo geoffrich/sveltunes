@@ -1,8 +1,6 @@
 import api from '$lib/api';
-import { redirect, error, fail } from '@sveltejs/kit';
 
-export async function load({ params, locals }) {
-	// TODO: waterfall
+export async function load({ params }) {
 	const detail = await api.getMasterRelease(params.id);
 	return {
 		detail,

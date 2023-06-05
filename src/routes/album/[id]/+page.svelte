@@ -57,7 +57,6 @@
 					action={isFavorite ? '?/unfavorite' : '?/favorite'}
 					method="POST"
 					use:enhance={(event) => {
-						// TODO: better way?
 						submission = event.formData;
 						return async ({ update, result }) => {
 							if (result.type === 'failure') {
