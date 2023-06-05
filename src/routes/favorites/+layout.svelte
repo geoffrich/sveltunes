@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import type { AlbumDetail } from '$lib/types.js';
-	import { TabGroup, Tab } from '@skeletonlabs/skeleton';
 	export let data;
 
-	let groupBy = $page.url.searchParams.get('groupBy') ?? $page.data.groupBy ?? 'album';
+	$: groupBy = $page.url.searchParams.get('groupBy') ?? $page.data.groupBy ?? 'album';
 
 	$: favorites = data.favorites.sort((a, b) => a.title.localeCompare(b.title));
 
@@ -41,10 +40,16 @@
 	<div class="grid favorites gap-6">
 		<div class="self-start">
 			<!-- TODO: no-js? -->
-			<TabGroup justify="justify-center" border="">
-				<Tab bind:group={groupBy} name="groupBy" value="album">Album</Tab>
-				<Tab bind:group={groupBy} name="groupBy" value="artist">Artist</Tab>
-			</TabGroup>
+			<div class="flex overflow-x-auto hide-scrollbar justify-center">
+				{#each [['Album', '?groupBy=album'], ['Artist', '?groupBy=artist']] as [label, href]}
+					<a
+						{href}
+						class="text-center cursor-pointer transition-colors duration-100 flex-none px-4 py-2 rounded-tl-container-token rounded-tr-container-token hover:variant-soft no-underline"
+						class:border-b-2={groupBy === label.toLowerCase()}
+						class:border-surface-900-50-token={groupBy === label.toLowerCase()}>{label}</a
+					>
+				{/each}
+			</div>
 			<ul class="rounded-md border-4 border-primary-900">
 				{#each items as favorite}
 					{@const isSelected = $page.url.pathname === favorite.path}
