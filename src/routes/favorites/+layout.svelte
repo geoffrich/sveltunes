@@ -22,12 +22,14 @@
 					image: f.thumbnailUrl,
 					path: `/favorites/album/${f.id}`
 			  }))
-			: Object.entries(albumsGroupedByArtist).map(([artist, albums]) => ({
-					title: artist,
-					subtitle: `${albums.length} album${albums.length > 1 ? 's' : ''}`,
-					image: albums[0].thumbnailUrl,
-					path: `/favorites/artist/${albums[0].mainArtist.id}`
-			  }));
+			: Object.entries(albumsGroupedByArtist)
+					.map(([artist, albums]) => ({
+						title: artist,
+						subtitle: `${albums.length} album${albums.length > 1 ? 's' : ''}`,
+						image: albums[0].thumbnailUrl,
+						path: `/favorites/artist/${albums[0].mainArtist.id}`
+					}))
+					.sort((a, b) => a.title.localeCompare(b.title));
 </script>
 
 <h1 class="text-4xl font-bold mb-4">Favorites</h1>
