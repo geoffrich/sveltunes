@@ -15,7 +15,6 @@ export const actions = {
 	favorite: async (event) => {
 		const data = await event.request.formData();
 		const id = data.get('id') as string;
-		// if (Math.random() < 0.3) return fail(500);
 		await api.favoriteAlbum(id, event.locals.userId);
 		return {
 			success: true

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { enhance } from '$app/forms';
+	import { browser } from '$app/environment';
 	import { toastStore } from '@skeletonlabs/skeleton';
 	import Tracklist from '$lib/Tracklist.svelte';
 	import Heart from '$lib/icons/Heart.svelte';
@@ -67,7 +68,6 @@
 						submission = event.formData;
 						return async ({ update, result }) => {
 							if (result.type === 'failure') {
-								// TODO: non-enhanced?
 								toastStore.trigger({
 									message: 'Unable to favorite album',
 									background: 'variant-filled-error'
