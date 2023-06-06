@@ -19,31 +19,25 @@
 	<title>{title}</title>
 </svelte:head>
 
-<AppShell slotPageContent="p-4">
-	<svelte:fragment slot="header">
-		<AppBar>
-			<svelte:fragment slot="lead">
-				<a href="/" class="text-xl uppercase font-bold">Sveltunes</a>
-			</svelte:fragment>
-			<svelte:fragment slot="trail">
-				{#if data.isLoggedIn}
-					<a
-						href="/favorites"
-						class="text-lg font-bold border-2 rounded-3xl px-4 py-1 no-underline relative"
-						>Favorites <span
-							class="text-sm text-surface-900 bg-surface-50 rounded-full px-2 py-1 tabular-nums"
-							>{data.favoriteAlbumIds.length}</span
-						></a
-					>
-					<form action="/logout" method="POST" use:enhance>
-						<button class="btn variant-filled">Logout</button>
-					</form>
-				{:else}
-					<a href="/login">Login</a>
-				{/if}
-			</svelte:fragment>
-		</AppBar>
-	</svelte:fragment>
+<header class="flex items-center gap-3 bg-surface-100-800-token p-4 sticky top-0 z-10">
+	<a href="/" class="text-xl uppercase font-bold mr-auto">Sveltunes</a>
+	{#if data.isLoggedIn}
+		<a
+			href="/favorites"
+			class="text-lg font-bold border-2 rounded-3xl px-4 py-1 no-underline relative"
+			>Favorites <span
+				class="text-sm text-surface-900 bg-surface-50 rounded-full px-2 py-1 tabular-nums"
+				>{data.favoriteAlbumIds.length}</span
+			></a
+		>
+		<form action="/logout" method="POST" use:enhance>
+			<button class="btn variant-filled">Logout</button>
+		</form>
+	{:else}
+		<a href="/login">Login</a>
+	{/if}
+</header>
+<main class="p-4">
 	<slot />
 	<Toast />
-</AppShell>
+</main>
