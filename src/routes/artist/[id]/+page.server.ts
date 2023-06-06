@@ -2,15 +2,14 @@ import api from '$lib/api';
 
 export async function load({ params, url }) {
 	const page = url.searchParams.get('page') ?? 1;
-	// TODO: waterfall
-	const detail = await api.getArtist(params.id);
-	// TODO: way to not refetch the artist when paginating?
+	// TODO: this is needed to prevent unhandled promise rejections: https://github.com/sveltejs/kit/issues/9785
+	const releases = api.getMasterReleasesForArtist(params.id, page).catch(() => null);
+	const artistDetails = await api.getArtist(params.id);
 	return {
-		detail,
+		detail: artistDetails,
 		streamed: {
-			// TODO: figure out if there's a better way to avoid unhandled exceptions
-			releases: api.getMasterReleasesForArtist(params.id, page).catch(() => null)
+			releases
 		},
-		title: detail.name
+		title: artistDetails.name
 	};
 }
