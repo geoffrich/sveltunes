@@ -1,7 +1,10 @@
 import api from '$lib/api';
 
-export async function load({ params }) {
+export async function load({ params, setHeaders }) {
 	const detail = await api.getMasterRelease(params.id);
+	setHeaders({
+		'Cache-Control': 'public, max-age=60'
+	});
 	return {
 		detail,
 		title: detail.title
