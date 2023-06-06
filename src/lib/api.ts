@@ -9,6 +9,7 @@ import type {
 	SearchResponse
 } from './discogs';
 import { delay } from './util';
+import { LRUCache } from 'lru-cache';
 
 const DISCOGS_BASE_URL = 'https://api.discogs.com';
 
@@ -21,16 +22,25 @@ interface DB {
 // temporary in-memory db
 const db: DB = {
 	123: {
-		favorites: ['66631', '17217', '38722']
+		favorites: ['66631', '17217', '38722', '38682', '502470']
 	}
 };
+
+const albumCache = new LRUCache<string, AlbumDetail>({
+	max: 500
+});
+
+const artistCache = new LRUCache<string, ArtistDetail>({
+	max: 500
+});
 
 function adaptSearchResult(result: DiscogsSearchResult): SearchResult {
 	return {
 		title: result.title,
 		url: result.type === 'master' ? `/album/${result.id}` : `/artist/${result.id}`,
 		imageUrl: result.thumb || result.cover_image,
-		year: result.year
+		year: result.year,
+		id: result.id
 	};
 }
 
@@ -98,10 +108,17 @@ function adaptArtistReleases(response: ArtistReleasesResponse): Album[] {
 }
 
 const getMasterRelease = async (id: string) => {
+	const cached = albumCache.get(id);
+	if (cached) {
+		console.log('Found album', id, 'in cache');
+		return cached;
+	}
 	console.log('Fetching album id', id);
 	const response = await callDiscogsWithAuth(`/masters/${id}`);
 	const parsed: MasterRelease = await response.json();
-	return adaptMasterRelease(parsed);
+	const adapted = adaptMasterRelease(parsed);
+	albumCache.set(id, adapted);
+	return adapted;
 };
 
 export default {
@@ -111,9 +128,17 @@ export default {
 	},
 	getMasterRelease,
 	getArtist: async (id: string) => {
+		const cached = artistCache.get(id);
+		if (cached) {
+			console.log('Found artist', id, 'in cache');
+			return cached;
+		}
+		console.log('Fetching artist id', id);
 		const response = await callDiscogsWithAuth(`/artists/${id}`);
 		const parsed: ArtistResponse = await response.json();
-		return adaptArtist(parsed);
+		const adapted = adaptArtist(parsed);
+		artistCache.set(id, adapted);
+		return adapted;
 	},
 	getMasterReleasesForArtist: async (artistId: string, page: number | string) => {
 		const response = await callDiscogsWithAuth(`/artists/${artistId}/releases?page=${page}`);

@@ -55,4 +55,5 @@ export interface SearchResult {
 	url: string;
 	imageUrl: string;
 	year?: string | number;
+	id: number;
 }
