@@ -26,6 +26,8 @@
 	$: if (form) {
 		submission = undefined;
 	}
+
+	let showOtherArtists = false;
 </script>
 
 <div class="mx-auto max-w-4xl space-y-4">
@@ -35,14 +37,19 @@
 			<h1 class="text-4xl">
 				<span class="italic font-bold">{detail.title}</span>, by
 				<a href={detail.mainArtist.url}>{detail.mainArtist.name}</a>
-				<!-- TODO: a11y -->
-				{#if detail.otherArtists?.length > 0}
-					<span class="text-lg" title={detail.otherArtists.map((a) => a.name).join(', ')}
-						>+ <span class=" underline decoration-dashed">{detail.otherArtists.length} others</span
-						></span
-					>
-				{/if}
 			</h1>
+			{#if detail.otherArtists?.length > 0}
+				<button
+					class="text-lg"
+					aria-expanded={showOtherArtists}
+					on:click={() => (showOtherArtists = !showOtherArtists)}
+					>+ <span class=" underline decoration-dashed">{detail.otherArtists.length} others</span
+					></button
+				>
+				{#if showOtherArtists}
+					<span class="text-lg">{detail.otherArtists.map((a) => a.name).join(', ')}</span>
+				{/if}
+			{/if}
 
 			<dl>
 				{#each details as [key, value]}
