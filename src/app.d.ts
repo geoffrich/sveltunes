@@ -5,7 +5,7 @@ declare namespace App {
 	interface Locals {
 		userId: number;
 	}
-	// TODO: typesafety not working due to https://github.com/sveltejs/kit/issues/9799
+	// typesafety not enforced due to https://github.com/sveltejs/kit/issues/9799
 	interface PageData {
 		title: string;
 	}

@@ -35,20 +35,18 @@
 	{#await data.streamed.releases}
 		<p>Loading releases...</p>
 	{:then releases}
-		{#if releases}
-			{@const pagination = releases.pagination}
-			<AlbumGrid albums={releases.list} />
-			<div class="flex gap-4">
-				{#if pagination.page > 1}
-					<a href="?page={pagination.page - 1}#releases">Previous</a>
-				{/if}
-				{#if pagination.page < pagination.pages}
-					<a href="?page={pagination.page + 1}#releases">Next</a>
-				{/if}
-				<span>Page {pagination.page} of {pagination.pages}</span>
-			</div>
-		{:else}
-			<p>Unable to fetch artist releases</p>
-		{/if}
+		{@const pagination = releases.pagination}
+		<AlbumGrid albums={releases.list} />
+		<div class="flex gap-4">
+			{#if pagination.page > 1}
+				<a href="?page={pagination.page - 1}#releases">Previous</a>
+			{/if}
+			{#if pagination.page < pagination.pages}
+				<a href="?page={pagination.page + 1}#releases">Next</a>
+			{/if}
+			<span>Page {pagination.page} of {pagination.pages}</span>
+		</div>
+	{:catch}
+		<p>Unable to fetch artist releases</p>
 	{/await}
 </div>
