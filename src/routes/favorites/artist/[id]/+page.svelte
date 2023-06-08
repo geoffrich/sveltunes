@@ -15,8 +15,9 @@
 		let:release
 		use:enhance={() => {
 			return ({ result, update }) => {
+				const wasLastAlbum = data.albums.length === 1;
 				if (result.type === 'success') {
-					promptUndo(release, `/favorites/artist/${data.id}`);
+					promptUndo(release, wasLastAlbum ? `/favorites/artist/${data.id}` : undefined);
 				}
 				update();
 			};
