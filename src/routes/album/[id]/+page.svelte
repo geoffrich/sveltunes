@@ -5,7 +5,6 @@
 	import { toastStore } from '@skeletonlabs/skeleton';
 	import Tracklist from '$lib/Tracklist.svelte';
 	export let data;
-	export let form;
 
 	$: detail = data.detail;
 
@@ -20,12 +19,6 @@
 	$: favoriteAlbumsHasId = data.favoriteAlbumIds.includes($page.params.id);
 	// when submitting, assume the submission has succeeded and the value is flipped
 	$: isFavorite = submission ? !favoriteAlbumsHasId : favoriteAlbumsHasId;
-
-	// once form is set, remove the submission (used for optimistic UI)
-	// note: this requires the action to return an actual object
-	$: if (form) {
-		submission = undefined;
-	}
 
 	let showOtherArtists = false;
 </script>
@@ -73,6 +66,7 @@
 								});
 							}
 							await update();
+							submission = undefined;
 						};
 					}}
 				>
