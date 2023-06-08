@@ -15,19 +15,21 @@
 			<input type="text" id="search" name="search" class="input" value={data.search} />
 		</div>
 
-		<div>
-			<label for="type" class="label">Type</label>
-			<select
-				id="type"
-				class="select"
-				name="type"
-				value={data.type}
-				on:change={() => form.requestSubmit()}
-			>
-				<option value="master">Album</option>
-				<option value="artist">Artist</option>
-			</select>
-			<div />
+		<div class="grid grid-cols-3 items-end gap-4">
+			<div class="col-span-2">
+				<label for="type" class="label">Type</label>
+				<select
+					id="type"
+					class="select"
+					name="type"
+					value={data.type}
+					on:change={() => form.requestSubmit()}
+				>
+					<option value="master">Album</option>
+					<option value="artist">Artist</option>
+				</select>
+			</div>
+			<button class="btn variant-filled">Go</button>
 		</div>
 	</form>
 

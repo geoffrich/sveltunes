@@ -1,10 +1,9 @@
 <script lang="ts">
+	import FavoriteButton from './FavoriteButton.svelte';
 	import { page } from '$app/stores';
 	import { enhance } from '$app/forms';
-	import { browser } from '$app/environment';
 	import { toastStore } from '@skeletonlabs/skeleton';
 	import Tracklist from '$lib/Tracklist.svelte';
-	import Heart from '$lib/icons/Heart.svelte';
 	export let data;
 	export let form;
 
@@ -77,15 +76,7 @@
 						};
 					}}
 				>
-					<input type="hidden" name="id" value={$page.params.id} />
-					<button
-						class="btn border-2"
-						class:variant-filled={!isFavorite}
-						class:variant-filled-secondary={isFavorite}
-					>
-						<Heart class={isFavorite ? 'fill-red-600' : ''} />
-						<span>Favorite</span>
-					</button>
+					<FavoriteButton {isFavorite} />
 				</form>
 			{/if}
 		</div>

@@ -14,5 +14,5 @@
 		/>
 	</form>
 
-	<AlbumGrid albums={data.releases} hideText={true} />
+	<AlbumGrid albums={data.releases} hideText={true} preloadBehavior={'hover'} />
 </div>

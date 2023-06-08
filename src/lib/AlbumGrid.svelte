@@ -2,9 +2,10 @@
 	import type { Album } from './types';
 	export let albums: Album[];
 	export let hideText = false;
+	export let preloadBehavior: 'tap' | 'hover' = 'tap';
 </script>
 
-<ul class="grid albums gap-4" data-sveltekit-preload-data="tap">
+<ul class="grid albums gap-4" data-sveltekit-preload-data={preloadBehavior}>
 	{#each albums as release}
 		<li class="relative">
 			<div class="relative pb-2">

@@ -21,7 +21,7 @@
 		use:enhance={() => {
 			return ({ result, update }) => {
 				if (result.type !== 'error') {
-					promptUndo(data.album);
+					promptUndo(data.album, `/favorites/album/${data.id}`);
 				}
 				update();
 			};
