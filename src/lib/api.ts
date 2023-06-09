@@ -141,7 +141,7 @@ export default {
 		artistCache.set(id, adapted);
 		return adapted;
 	},
-	getMasterReleasesForArtist: async (artistId: string, page: number | string) => {
+	getMasterReleasesForArtist: async (artistId: string, page: number | string = 1) => {
 		const response = await callDiscogsWithAuth(`/artists/${artistId}/releases?page=${page}`);
 		const parsed: ArtistReleasesResponse = await response.json();
 		return {
