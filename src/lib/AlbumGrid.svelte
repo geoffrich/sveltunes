@@ -5,7 +5,11 @@
 	export let preloadBehavior: 'tap' | 'hover' = 'tap';
 </script>
 
-<ul class="grid albums gap-4" data-sveltekit-preload-data={preloadBehavior}>
+<ul
+	class="grid albums gap-4"
+	data-sveltekit-preload-data={preloadBehavior}
+	data-sveltekit-preload-code="hover"
+>
 	{#each albums as release}
 		<li class="relative">
 			<div class="relative pb-2">
@@ -15,16 +19,12 @@
 				</div>
 			</div>
 
-			<svelte:element
-				this={release.url ? 'a' : 'span'}
-				class="after:absolute after:inset-0"
-				href={release.url}
-			>
+			<a class="after:absolute after:inset-0" href={release.url || undefined}>
 				<span class:sr-only={hideText}>
 					{release.title}
 					{#if release.year}({release.year}){/if}
 				</span>
-			</svelte:element>
+			</a>
 		</li>
 	{/each}
 </ul>
