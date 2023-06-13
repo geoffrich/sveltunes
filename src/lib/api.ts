@@ -11,8 +11,12 @@ import type {
 import { delay } from './util';
 import { LRUCache } from 'lru-cache';
 import { HIGHLIGHTED_RELEASES } from './data';
+import { writeFileSync, readFileSync, existsSync } from 'fs';
+import path from 'path';
 
 const DISCOGS_BASE_URL = 'https://api.discogs.com';
+const READ_BACKUPS = false;
+const WRITE_BACKUPS = true;
 
 interface DB {
 	[key: string]: {
@@ -115,9 +119,8 @@ const getMasterRelease = async (id: string) => {
 		return cached;
 	}
 	console.log('Fetching album id', id);
-	const response = await callDiscogsWithAuth(`/masters/${id}`);
-	const parsed: MasterRelease = await response.json();
-	const adapted = adaptMasterRelease(parsed);
+	const response: MasterRelease = await callDiscogsWithAuth(`/masters/${id}`);
+	const adapted = adaptMasterRelease(response);
 	albumCache.set(id, adapted);
 	return adapted;
 };
@@ -135,27 +138,28 @@ export default {
 			return cached;
 		}
 		console.log('Fetching artist id', id);
-		const response = await callDiscogsWithAuth(`/artists/${id}`);
-		const parsed: ArtistResponse = await response.json();
-		const adapted = adaptArtist(parsed);
+		const response: ArtistResponse = await callDiscogsWithAuth(`/artists/${id}`);
+		const adapted = adaptArtist(response);
 		artistCache.set(id, adapted);
 		return adapted;
 	},
 	getMasterReleasesForArtist: async (artistId: string, page: number | string = 1) => {
-		const response = await callDiscogsWithAuth(`/artists/${artistId}/releases?page=${page}`);
-		const parsed: ArtistReleasesResponse = await response.json();
+		const response: ArtistReleasesResponse = await callDiscogsWithAuth(
+			`/artists/${artistId}/releases?page=${page}`
+		);
 		return {
-			list: adaptArtistReleases(parsed),
+			list: adaptArtistReleases(response),
 			pagination: {
-				page: parsed.pagination?.page ?? 1,
-				pages: parsed.pagination?.pages ?? 0
+				page: response.pagination?.page ?? 1,
+				pages: response.pagination?.pages ?? 0
 			}
 		};
 	},
 	getSearchResults: async (query: string, type?: string) => {
-		const response = await callDiscogsWithAuth(`/database/search?q=${query}&type=${type}`);
-		const parsed: SearchResponse = await response.json();
-		return parsed.results.map(adaptSearchResult);
+		const response: SearchResponse = await callDiscogsWithAuth(
+			`/database/search?q=${query}&type=${type}`
+		);
+		return response.results.map(adaptSearchResult);
 	},
 	favoriteAlbum: async (id: string, userId: number) => {
 		db[userId] = db[userId] ?? {};
@@ -186,6 +190,11 @@ export default {
 };
 
 async function callDiscogsWithAuth(url: string) {
+	if (backupExists(url)) {
+		console.log('Using backup for', url);
+		return readBackupResponse(url);
+	}
+
 	const response = await fetch(new URL(url, DISCOGS_BASE_URL), {
 		headers: {
 			Authorization: 'Discogs key=' + DISCOGS_CONSUMER_KEY + ', secret=' + DISCOGS_CONSUMER_SECRET
@@ -203,5 +212,28 @@ async function callDiscogsWithAuth(url: string) {
 		}
 	}
 
-	return response;
+	const parsed = await response.json();
+	writeBackupResponse(url, parsed);
+
+	return parsed;
+}
+
+function writeBackupResponse(url: string, response: any) {
+	if (!WRITE_BACKUPS) return;
+	writeFileSync(
+		path.resolve() + `/backup/${encodeURIComponent(url)}-response.json`,
+		JSON.stringify(response)
+	);
+}
+
+function backupExists(url: string) {
+	return (
+		READ_BACKUPS && existsSync(path.resolve() + `/backup/${encodeURIComponent(url)}-response.json`)
+	);
+}
+
+function readBackupResponse(url: string) {
+	return JSON.parse(
+		readFileSync(path.resolve() + `/backup/${encodeURIComponent(url)}-response.json`).toString()
+	);
 }
