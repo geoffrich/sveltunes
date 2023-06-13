@@ -33,7 +33,7 @@
 
 	<h2 class="text-2xl font-bold" id="releases">Releases</h2>
 	{#await data.streamed.releases}
-		<p>Loading releases...</p>
+		<AlbumGrid albums={[]} loading />
 	{:then releases}
 		{@const pagination = releases.pagination}
 		<AlbumGrid albums={releases.list} />
