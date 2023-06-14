@@ -16,7 +16,7 @@ import path from 'path';
 
 const DISCOGS_BASE_URL = 'https://api.discogs.com';
 const READ_BACKUPS = false;
-const WRITE_BACKUPS = true;
+const WRITE_BACKUPS = false;
 
 interface DB {
 	[key: string]: {
