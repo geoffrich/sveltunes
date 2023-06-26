@@ -5,6 +5,7 @@
 	import '@skeletonlabs/skeleton/styles/skeleton.css';
 	import '../app.postcss';
 	import { Toast } from '@skeletonlabs/skeleton';
+	import Heart from '$lib/icons/Heart.svelte';
 
 	import { page } from '$app/stores';
 	import { enhance } from '$app/forms';
@@ -22,9 +23,12 @@
 	{#if data.isLoggedIn}
 		<a
 			href="/favorites"
-			class="text-lg font-bold border-2 rounded-3xl px-4 py-1 no-underline relative"
-			>Favorites <span
-				class="text-sm text-surface-900 bg-surface-50 rounded-full px-2 py-1 tabular-nums"
+			class="text-lg font-bold border-2 rounded-3xl px-4 py-1 no-underline relative flex gap-1 items-center"
+		>
+			<Heart class="inline fill-red-600" />
+			<span class="hidden xs:inline">Favorites</span>
+			<span
+				class="text-sm text-surface-900 bg-surface-50 rounded-full tabular-nums h-6 w-6 flex items-center justify-center"
 				>{data.favoriteAlbumIds.length}</span
 			></a
 		>
