@@ -17,7 +17,7 @@ export function createFavoritesStore(favorites: AlbumDetail[]) {
 	};
 	const update = (fn: Updater<AlbumDetail[]>) => {
 		_favorites = fn(_favorites);
-		_store.update(fn);
+		_store.set(_favorites);
 	};
 
 	const store = {
@@ -25,16 +25,21 @@ export function createFavoritesStore(favorites: AlbumDetail[]) {
 		set,
 		update,
 		remove: (id: number) => {
-			// TODO: preserve order on undo
-			const toRemove = _favorites.find((f) => f.id === id);
-			if (!toRemove)
+			console.log('removing id', id);
+			const toRemove = _favorites.findIndex((f) => f.id === id);
+			if (toRemove === -1)
 				return () => {
 					/* noop */
 				};
-			update((favorites) => favorites.filter((f) => f !== toRemove));
+			const [removed] = _favorites.splice(toRemove, 1);
+			set(_favorites);
+			console.log({ removed, toRemove, _favorites });
 			// return a function to undo the removal
 			return () => {
-				update((favorites) => [...favorites, toRemove]);
+				update((favorites) => {
+					favorites.splice(toRemove, 0, removed);
+					return favorites;
+				});
 			};
 		},
 		get: (albumId: string) => {
