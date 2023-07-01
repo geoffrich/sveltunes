@@ -1,9 +1,10 @@
-<script>
+<script lang="ts">
 	import { page } from '$app/stores';
-	import { enhance } from '$app/forms';
+	import { applyAction, enhance } from '$app/forms';
 	import Tracklist from '$lib/Tracklist.svelte';
 	import Trash from '$lib/icons/Trash.svelte';
 	import { promptUndo } from '../../undo/action';
+	import { goto, invalidate } from '$app/navigation';
 	export let data;
 
 	$: detail = data.album;
@@ -19,11 +20,21 @@
 		action="?/unfavorite"
 		method="POST"
 		use:enhance={() => {
-			return ({ result, update }) => {
+			return async ({ result }) => {
+				// we only return redirect now, but check "not error" to be safe
 				if (result.type !== 'error') {
-					promptUndo(data.album, `/favorites/album/${data.id}`);
+					// update the data ourself instead of refetching
+					const undo = data.favorites.remove(Number(data.id));
+					promptUndo(detail, `/favorites/album/${data.id}`, undo);
 				}
-				update();
+				// the default redirect behavior calls `invalidateAll`, which will regenerate our `favorites` store. we want to avoid that.
+				if (result.type === 'redirect') {
+					// we need to await so that we're not firing `goto` and `invalidate` simultaneously
+					await goto(result.location);
+				} else {
+					applyAction(result);
+				}
+				invalidate('app:favorites');
 			};
 		}}
 	>

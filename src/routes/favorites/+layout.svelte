@@ -3,11 +3,13 @@
 	import type { AlbumDetail } from '$lib/types.js';
 	export let data;
 
-	$: groupBy = $page.url.searchParams.get('groupBy') ?? $page.data.groupBy ?? 'album';
+	let groupBy = 'album';
+	// once we've set groupBy, don't change it unless a new param is it
+	// this prevents the tabs from unexpectedly resetting after a navigation without a query param
+	$: groupBy = $page.url.searchParams.get('groupBy') ?? $page.data.groupBy ?? groupBy;
 
-	$: favorites = data.favorites.sort((a, b) => a.title.localeCompare(b.title));
-
-	$: albumsGroupedByArtist = favorites.reduce<Record<string, AlbumDetail[]>>((acc, album) => {
+	let favorites = data.favorites;
+	$: albumsGroupedByArtist = $favorites.reduce<Record<string, AlbumDetail[]>>((acc, album) => {
 		const artist = album.mainArtist.name;
 		if (!acc[artist]) acc[artist] = [];
 		acc[artist].push(album);
@@ -16,12 +18,14 @@
 
 	$: items =
 		groupBy === 'album'
-			? favorites.map((f) => ({
-					title: f.title,
-					subtitle: f.mainArtist.name,
-					image: f.thumbnailUrl,
-					path: `/favorites/album/${f.id}`
-			  }))
+			? $favorites
+					.map((f) => ({
+						title: f.title,
+						subtitle: f.mainArtist.name,
+						image: f.thumbnailUrl,
+						path: `/favorites/album/${f.id}`
+					}))
+					.sort((a, b) => a.title.localeCompare(b.title))
 			: Object.entries(albumsGroupedByArtist)
 					.map(([artist, albums]) => ({
 						title: artist,

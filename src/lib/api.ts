@@ -27,7 +27,7 @@ interface DB {
 // temporary in-memory db
 const db: DB = {
 	123: {
-		favorites: ['66631', '17217', '38722', '38682', '502470']
+		favorites: ['66631', '17217', '38722', '38682', '502470', '455233']
 	}
 };
 

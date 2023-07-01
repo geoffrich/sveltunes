@@ -1,8 +1,9 @@
 <script lang="ts">
 	import AlbumGrid from '$lib/AlbumGrid.svelte';
 	import Trash from '$lib/icons/Trash.svelte';
-	import { enhance } from '$app/forms';
+	import { applyAction, enhance } from '$app/forms';
 	import { promptUndo } from '../../undo/action';
+	import { invalidate } from '$app/navigation';
 
 	export let data;
 </script>
@@ -14,12 +15,16 @@
 		slot="action"
 		let:release
 		use:enhance={() => {
-			return ({ result, update }) => {
-				const wasLastAlbum = data.albums.length === 1;
+			return ({ result }) => {
+				// update the data ourselves instead of refetching
+				const undo = data.favorites.remove(release.id);
 				if (result.type === 'success') {
-					promptUndo(release, wasLastAlbum ? `/favorites/artist/${data.id}` : undefined);
+					invalidate('app:favorites');
+					const wasLastAlbum = data.albums.length === 1;
+					promptUndo(release, wasLastAlbum ? `/favorites/artist/${data.id}` : undefined, undo);
 				}
-				update();
+				data.invalidate();
+				applyAction(result);
 			};
 		}}
 	>

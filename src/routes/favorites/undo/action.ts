@@ -9,7 +9,7 @@ export interface UndoRequest {
 // experimental pattern co-locating the code calling a server endpoint
 // with the actual server route itself
 
-export function promptUndo(album: Album, redirectTo?: string) {
+export function promptUndo(album: Album, redirectTo?: string, afterUndo?: () => void) {
 	const request: UndoRequest = { id: album.id.toString() };
 	const cb = () =>
 		fetch('/favorites/undo', {
@@ -19,6 +19,7 @@ export function promptUndo(album: Album, redirectTo?: string) {
 				'Content-Type': 'application/json'
 			}
 		})
+			.then(() => afterUndo?.())
 			.then(() => invalidate('app:favorites'))
 			.then(() => (redirectTo ? goto(redirectTo) : null));
 
