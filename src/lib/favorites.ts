@@ -25,7 +25,6 @@ export function createFavoritesStore(favorites: AlbumDetail[]) {
 		set,
 		update,
 		remove: (id: number) => {
-			console.log('removing id', id);
 			const toRemove = _favorites.findIndex((f) => f.id === id);
 			if (toRemove === -1)
 				return () => {
@@ -33,7 +32,6 @@ export function createFavoritesStore(favorites: AlbumDetail[]) {
 				};
 			const [removed] = _favorites.splice(toRemove, 1);
 			set(_favorites);
-			console.log({ removed, toRemove, _favorites });
 			// return a function to undo the removal
 			return () => {
 				update((favorites) => {
