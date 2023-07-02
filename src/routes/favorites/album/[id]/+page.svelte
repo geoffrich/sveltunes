@@ -23,7 +23,7 @@
 			return async ({ result }) => {
 				if (result.type === 'success' || result.type === 'redirect') {
 					// update the data ourself instead of refetching
-					const undo = data.favorites.remove(Number(data.id));
+					const undo = await data.favorites.remove(Number(data.id));
 					promptUndo(detail, {
 						redirectTo: `/favorites/album/${data.id}`,
 						afterUndo: undo
@@ -36,7 +36,6 @@
 				} else {
 					applyAction(result);
 				}
-				invalidate('app:favorites');
 			};
 		}}
 	>

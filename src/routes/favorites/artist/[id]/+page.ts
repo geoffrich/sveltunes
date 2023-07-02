@@ -1,9 +1,10 @@
 import { redirect } from '@sveltejs/kit';
 
-export async function load({ parent, params, depends }) {
+export async function load(event) {
+	const { parent, params } = event;
 	const parentData = await parent();
-	depends('app:favorites'); // re-run this when favorites change
 	const albums = parentData.favorites.getArtistAlbums(params.id);
+	parentData.favorites.rerunWhenFavoritesChange(event);
 	if (albums.length === 0) throw redirect(302, '/favorites');
 
 	return {

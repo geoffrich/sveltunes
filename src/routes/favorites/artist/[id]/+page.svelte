@@ -18,7 +18,7 @@
 			return async ({ result }) => {
 				if (result.type === 'success' || result.type === 'redirect') {
 					// update the data ourselves instead of refetching
-					const undo = data.favorites.remove(release.id);
+					const undo = await data.favorites.remove(release.id);
 					const wasLastAlbum = data.albums.length === 1;
 					promptUndo(release, {
 						redirectTo: wasLastAlbum ? `/favorites/artist/${data.id}` : undefined,
@@ -31,7 +31,6 @@
 				} else {
 					applyAction(result);
 				}
-				invalidate('app:favorites');
 			};
 		}}
 	>

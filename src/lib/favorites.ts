@@ -1,15 +1,11 @@
-import { type Writable, writable, type Updater } from 'svelte/store';
+import { writable, type Updater } from 'svelte/store';
 import type { AlbumDetail } from './types';
+import type { LoadEvent } from '@sveltejs/kit';
+import { invalidate } from '$app/navigation';
 
-export interface FavoritesStore {
-	// a subscribe method that is the same type as the Writable subscribe method
-	subscribe: Writable<AlbumDetail[]>['subscribe'];
-	remove: (id: number) => () => void;
-	get: (albumId: string) => AlbumDetail | undefined;
-	getArtistAlbums: (artistId: string) => AlbumDetail[];
-}
+const INVALIDATION_KEY = 'app:favorites';
 
-export function createFavoritesStore(favorites: AlbumDetail[]): FavoritesStore {
+export function createFavoritesStore(favorites: AlbumDetail[]) {
 	const _store = writable(favorites);
 	let _favorites = favorites;
 	const subscribe = _store.subscribe;
@@ -24,7 +20,7 @@ export function createFavoritesStore(favorites: AlbumDetail[]): FavoritesStore {
 
 	const store = {
 		subscribe,
-		remove: (id: number) => {
+		remove: async (id: number) => {
 			const toRemove = _favorites.findIndex((f) => f.id === id);
 			if (toRemove === -1)
 				return () => {
@@ -32,12 +28,14 @@ export function createFavoritesStore(favorites: AlbumDetail[]): FavoritesStore {
 				};
 			const [removed] = _favorites.splice(toRemove, 1);
 			set(_favorites);
+			await invalidate(INVALIDATION_KEY);
 			// return a function to undo the removal
-			return () => {
+			return async () => {
 				update((favorites) => {
 					favorites.splice(toRemove, 0, removed);
 					return favorites;
 				});
+				await invalidate(INVALIDATION_KEY);
 			};
 		},
 		get: (albumId: string) => {
@@ -45,6 +43,9 @@ export function createFavoritesStore(favorites: AlbumDetail[]): FavoritesStore {
 		},
 		getArtistAlbums: (artistId: string) => {
 			return _favorites.filter((f) => f.mainArtist.id.toString() === artistId);
+		},
+		rerunWhenFavoritesChange: (event: LoadEvent) => {
+			event.depends(INVALIDATION_KEY);
 		}
 	};
 	return store;
