@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { applyAction, enhance } from '$app/forms';
+	import { enhance } from '$app/forms';
 	import Tracklist from '$lib/Tracklist.svelte';
 	import Trash from '$lib/icons/Trash.svelte';
 	import { promptUndo } from '../../undo/action';
-	import { goto, invalidate } from '$app/navigation';
+	import { applyActionWithoutInvalidating } from '$lib/util';
 	export let data;
 
 	$: detail = data.album;
@@ -29,13 +29,7 @@
 						afterUndo: undo
 					});
 				}
-				// the default redirect behavior calls `invalidateAll`, which will regenerate our `favorites` store. we want to avoid that.
-				if (result.type === 'redirect') {
-					// we need to await so that we're not firing `goto` and `invalidate` simultaneously
-					await goto(result.location);
-				} else {
-					applyAction(result);
-				}
+				applyActionWithoutInvalidating(result);
 			};
 		}}
 	>

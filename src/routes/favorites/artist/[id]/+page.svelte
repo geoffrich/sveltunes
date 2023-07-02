@@ -1,9 +1,9 @@
 <script lang="ts">
 	import AlbumGrid from '$lib/AlbumGrid.svelte';
 	import Trash from '$lib/icons/Trash.svelte';
-	import { applyAction, enhance } from '$app/forms';
+	import { enhance } from '$app/forms';
 	import { promptUndo } from '../../undo/action';
-	import { goto, invalidate } from '$app/navigation';
+	import { applyActionWithoutInvalidating } from '$lib/util';
 
 	export let data;
 </script>
@@ -25,12 +25,7 @@
 						afterUndo: undo
 					});
 				}
-				if (result.type === 'redirect') {
-					// we need to await so that we're not firing `goto` and `invalidate` simultaneously
-					await goto(result.location);
-				} else {
-					applyAction(result);
-				}
+				applyActionWithoutInvalidating(result);
 			};
 		}}
 	>
