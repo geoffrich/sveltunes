@@ -24,7 +24,10 @@
 				if (result.type === 'success' || result.type === 'redirect') {
 					// update the data ourself instead of refetching
 					const undo = data.favorites.remove(Number(data.id));
-					promptUndo(detail, `/favorites/album/${data.id}`, undo);
+					promptUndo(detail, {
+						redirectTo: `/favorites/album/${data.id}`,
+						afterUndo: undo
+					});
 				}
 				// the default redirect behavior calls `invalidateAll`, which will regenerate our `favorites` store. we want to avoid that.
 				if (result.type === 'redirect') {

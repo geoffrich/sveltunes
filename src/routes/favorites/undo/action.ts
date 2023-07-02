@@ -9,7 +9,10 @@ export interface UndoRequest {
 // experimental pattern co-locating the code calling a server endpoint
 // with the actual server route itself
 
-export function promptUndo(album: Album, redirectTo?: string, afterUndo?: () => void) {
+export function promptUndo(
+	album: Album,
+	opts: { redirectTo?: string; afterUndo?: () => void } = {}
+) {
 	const request: UndoRequest = { id: album.id.toString() };
 	const cb = () =>
 		fetch('/favorites/undo', {
@@ -19,9 +22,9 @@ export function promptUndo(album: Album, redirectTo?: string, afterUndo?: () => 
 				'Content-Type': 'application/json'
 			}
 		})
-			.then(() => afterUndo?.())
+			.then(() => opts.afterUndo?.())
 			.then(() => invalidate('app:favorites'))
-			.then(() => (redirectTo ? goto(redirectTo) : null));
+			.then(() => (opts.redirectTo ? goto(opts.redirectTo) : null));
 
 	toastStore.trigger({
 		message: `Removed ${album.title} from favorites.`,

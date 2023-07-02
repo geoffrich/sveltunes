@@ -20,7 +20,10 @@
 					// update the data ourselves instead of refetching
 					const undo = data.favorites.remove(release.id);
 					const wasLastAlbum = data.albums.length === 1;
-					promptUndo(release, wasLastAlbum ? `/favorites/artist/${data.id}` : undefined, undo);
+					promptUndo(release, {
+						redirectTo: wasLastAlbum ? `/favorites/artist/${data.id}` : undefined,
+						afterUndo: undo
+					});
 				}
 				if (result.type === 'redirect') {
 					// we need to await so that we're not firing `goto` and `invalidate` simultaneously
