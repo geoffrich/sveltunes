@@ -3,7 +3,7 @@
 	import Trash from '$lib/icons/Trash.svelte';
 	import { applyAction, enhance } from '$app/forms';
 	import { promptUndo } from '../../undo/action';
-	import { invalidate } from '$app/navigation';
+	import { goto, invalidate } from '$app/navigation';
 
 	export let data;
 </script>
@@ -15,16 +15,20 @@
 		slot="action"
 		let:release
 		use:enhance={() => {
-			return ({ result }) => {
-				// update the data ourselves instead of refetching
-				const undo = data.favorites.remove(release.id);
-				if (result.type === 'success') {
-					invalidate('app:favorites');
+			return async ({ result }) => {
+				if (result.type === 'success' || result.type === 'redirect') {
+					// update the data ourselves instead of refetching
+					const undo = data.favorites.remove(release.id);
 					const wasLastAlbum = data.albums.length === 1;
 					promptUndo(release, wasLastAlbum ? `/favorites/artist/${data.id}` : undefined, undo);
 				}
-				data.invalidate();
-				applyAction(result);
+				if (result.type === 'redirect') {
+					// we need to await so that we're not firing `goto` and `invalidate` simultaneously
+					await goto(result.location);
+				} else {
+					applyAction(result);
+				}
+				invalidate('app:favorites');
 			};
 		}}
 	>

@@ -21,8 +21,7 @@
 		method="POST"
 		use:enhance={() => {
 			return async ({ result }) => {
-				// we only return redirect now, but check "not error" to be safe
-				if (result.type !== 'error') {
+				if (result.type === 'success' || result.type === 'redirect') {
 					// update the data ourself instead of refetching
 					const undo = data.favorites.remove(Number(data.id));
 					promptUndo(detail, `/favorites/album/${data.id}`, undo);
