@@ -8,8 +8,7 @@
 	// this prevents the tabs from unexpectedly resetting after a navigation without a query param
 	$: groupBy = $page.url.searchParams.get('groupBy') ?? $page.data.groupBy ?? groupBy;
 
-	// TODO: does this need to be reactive? maybe reactively call set?
-	let favorites = data.favorites;
+	$: favorites = data.favorites;
 	$: albumsGroupedByArtist = $favorites.reduce<Record<string, AlbumDetail[]>>((acc, album) => {
 		const artist = album.mainArtist.name;
 		if (!acc[artist]) acc[artist] = [];
