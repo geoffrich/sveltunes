@@ -37,7 +37,12 @@
 						}
 						controller = event.controller;
 						// if a submission was already in progress, then the next one cancels it out
-						submission = submission ? undefined : event.formData;
+						if (submission) {
+							submission = undefined;
+							event.cancel();
+							return;
+						}
+						submission = event.formData;
 						return async ({ update, result }) => {
 							if (result.type === 'failure') {
 								toastStore.trigger({
