@@ -12,6 +12,8 @@
 	$: favoriteAlbumsHasId = data.favoriteAlbumIds.includes($page.params.id);
 	// when submitting, assume the submission has succeeded and the value is flipped
 	$: isFavorite = submission ? !favoriteAlbumsHasId : favoriteAlbumsHasId;
+
+	let controller: AbortController;
 </script>
 
 <div class="mx-auto max-w-4xl space-y-4">
@@ -30,7 +32,12 @@
 					action={isFavorite ? '?/unfavorite' : '?/favorite'}
 					method="POST"
 					use:enhance={(event) => {
-						submission = event.formData;
+						if (controller) {
+							controller.abort();
+						}
+						controller = event.controller;
+						// if a submission was already in progress, then the next one cancels it out
+						submission = submission ? undefined : event.formData;
 						return async ({ update, result }) => {
 							if (result.type === 'failure') {
 								toastStore.trigger({
