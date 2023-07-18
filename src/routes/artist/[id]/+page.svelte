@@ -4,6 +4,11 @@
 	export let data;
 
 	$: detail = data.detail;
+
+	function insertLinks(description: string) {
+		// replace occurences of [a47333] with <a href="/artist/47333">47333</a>
+		return description.replace(/\[a(\d+)\]/g, '<a href="/artist/$1">$1</a>');
+	}
 </script>
 
 <div class="mx-auto max-w-4xl space-y-4">
@@ -18,7 +23,7 @@
 			<h1 class="text-4xl font-bold">
 				{detail.name}
 			</h1>
-			<p>{detail.description}</p>
+			<p>{@html insertLinks(detail.description)}</p>
 		</div>
 	</div>
 
