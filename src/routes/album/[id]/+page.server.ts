@@ -2,14 +2,10 @@ import api from '$lib/api';
 import { delay } from '$lib/util.js';
 import { fail } from '@sveltejs/kit';
 
-export async function load({ params, setHeaders, locals }) {
+export async function load({ params }) {
 	const detail = await api.getMasterRelease(params.id);
-	// setHeaders({
-	// 	'Cache-Control': 'public, max-age=60'
-	// });
 	return {
 		detail,
-		isFavorite: api.isAlbumFavorited(params.id, locals.userId),
 		title: detail.title
 	};
 }
