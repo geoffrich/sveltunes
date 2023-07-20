@@ -5,13 +5,13 @@
 	import { toastStore } from '@skeletonlabs/skeleton';
 	import Tracklist from '$lib/Tracklist.svelte';
 	import AlbumInfo from './AlbumInfo.svelte';
+	import { invalidate } from '$app/navigation';
 	export let data;
 
 	let submission: FormData | undefined;
 
-	$: favoriteAlbumsHasId = data.favoriteAlbumIds.includes($page.params.id);
 	// when submitting, assume the submission has succeeded and the value is flipped
-	$: isFavorite = submission ? !favoriteAlbumsHasId : favoriteAlbumsHasId;
+	$: isFavorite = submission ? !data.isFavorite : data.isFavorite;
 
 	let controller: AbortController;
 </script>
@@ -43,15 +43,19 @@
 							return;
 						}
 						submission = event.formData;
-						return async ({ update, result }) => {
+						return async ({ result }) => {
 							if (result.type === 'failure') {
 								toastStore.trigger({
 									message: 'Unable to favorite album',
 									background: 'variant-filled-error'
 								});
 							}
-							await update();
+							// invalidate will reset the data prop, so we need to store the new value
+							let newFavorite = !data.isFavorite;
+							await invalidate('app:favorites');
 							submission = undefined;
+							// override the data ourselves instead of refetching
+							data.isFavorite = newFavorite;
 						};
 					}}
 				>

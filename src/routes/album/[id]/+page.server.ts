@@ -2,10 +2,12 @@ import api from '$lib/api';
 import { delay } from '$lib/util.js';
 import { fail } from '@sveltejs/kit';
 
-export async function load({ params }) {
+export async function load({ params, locals }) {
+	const isFavorite = api.isAlbumFavorited(params.id, locals.userId);
 	const detail = await api.getMasterRelease(params.id);
 	return {
 		detail,
+		isFavorite,
 		title: detail.title
 	};
 }
